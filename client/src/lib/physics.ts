@@ -147,6 +147,13 @@ export function checkLineCrossing(
   lineStart: Point,
   lineEnd: Point
 ): boolean {
+  const dx = currentPos.x - prevPos.x;
+  const dy = currentPos.y - prevPos.y;
+  const movementLength = Math.sqrt(dx * dx + dy * dy);
+  if (movementLength < 0.001) {
+    return false;
+  }
+  
   const d1 = crossProduct(
     subtractPoints(lineEnd, lineStart),
     subtractPoints(prevPos, lineStart)
@@ -156,7 +163,7 @@ export function checkLineCrossing(
     subtractPoints(currentPos, lineStart)
   );
   
-  if ((d1 > 0 && d2 > 0) || (d1 < 0 && d2 < 0)) {
+  if (d1 * d2 > 0) {
     return false;
   }
   
@@ -169,7 +176,7 @@ export function checkLineCrossing(
     subtractPoints(lineEnd, prevPos)
   );
   
-  if ((d3 > 0 && d4 > 0) || (d3 < 0 && d4 < 0)) {
+  if (d3 * d4 > 0) {
     return false;
   }
   
