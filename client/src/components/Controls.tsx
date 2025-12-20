@@ -64,7 +64,7 @@ export function Controls({
           <Slider
             value={[speed]}
             onValueChange={([value]) => onSpeedChange(value)}
-            min={0.3}
+            min={0.1}
             max={3}
             step={0.1}
             className="w-full"
