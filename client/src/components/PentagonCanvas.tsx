@@ -84,7 +84,7 @@ export function PentagonCanvas({
     const centerX = dimensions.width / 2;
     const centerY = dimensions.height / 2;
     const pentagonRadius = Math.min(dimensions.width, dimensions.height) * 0.4;
-    const innerRadius = pentagonRadius * 0.5;
+    const innerRadius = pentagonRadius * 0.35;
     
     verticesRef.current = generatePentagonVertices(centerX, centerY, pentagonRadius);
     wallsRef.current = getWalls(verticesRef.current);
@@ -274,7 +274,7 @@ export function PentagonCanvas({
       if (crossed && !innerCrossedRef.current.has(innerWall.index)) {
         innerCrossedRef.current.add(innerWall.index);
         flashingInnerWallsRef.current.set(innerWall.index, 1);
-        playInnerNote(innerWall.index, volume);
+        playInnerNote(innerWall.index, volume * 0.7);
       } else if (!crossed && innerCrossedRef.current.has(innerWall.index)) {
         innerCrossedRef.current.delete(innerWall.index);
       }
