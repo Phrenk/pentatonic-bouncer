@@ -17,7 +17,7 @@ export default function Home() {
   useEffect(() => {
     preloadSounds().then(() => setSoundsLoaded(true));
   }, []);
-  const [speed, setSpeed] = useState(0.5);
+  const [speed, setSpeed] = useState(0.4);
   const [volume, setVolume] = useState(0.5);
   const [currentNote, setCurrentNote] = useState('');
   const [bounceCount, setBounceCount] = useState(0);
