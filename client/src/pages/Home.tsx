@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { PentagonCanvas } from '@/components/PentagonCanvas';
 import { Controls } from '@/components/Controls';
 import { StatusBar } from '@/components/StatusBar';
@@ -6,12 +6,17 @@ import { NoteHistory } from '@/components/NoteHistory';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Card } from '@/components/ui/card';
 import { Music2 } from 'lucide-react';
-import { resumeAudioContext } from '@/lib/audio';
+import { resumeAudioContext, preloadSounds } from '@/lib/audio';
 
 const MAX_HISTORY_LENGTH = 8;
 
 export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [soundsLoaded, setSoundsLoaded] = useState(false);
+
+  useEffect(() => {
+    preloadSounds().then(() => setSoundsLoaded(true));
+  }, []);
   const [speed, setSpeed] = useState(1);
   const [volume, setVolume] = useState(0.5);
   const [currentNote, setCurrentNote] = useState('');

@@ -1,11 +1,12 @@
 let audioContext: AudioContext | null = null;
+const audioBuffers: Map<number, AudioBuffer> = new Map();
 
-const PENTATONIC_NOTES = [
-  { note: 'C4', frequency: 261.63 },
-  { note: 'D4', frequency: 293.66 },
-  { note: 'E4', frequency: 329.63 },
-  { note: 'G4', frequency: 392.00 },
-  { note: 'A4', frequency: 440.00 },
+const SOUND_FILES = [
+  { note: 'C', file: '/sounds/BOS_CCS_Synth_Pad_One_Shot_Celestial_C_1766244226101.wav' },
+  { note: 'D', file: '/sounds/BOS_CCS_Synth_Pad_One_Shot_Mute_D_1766244226101.wav' },
+  { note: 'E', file: '/sounds/BOS_CCS_Synth_Pad_One_Shot_Celestial_C_2_1766244226100.wav' },
+  { note: 'G', file: '/sounds/BOS_CCS_Synth_Pad_One_Shot_Particles_G_1766244226101.wav' },
+  { note: 'A', file: '/sounds/BOS_CCS_Synth_Pad_One_Shot_End_A_1766244226100.wav' },
 ];
 
 export function getAudioContext(): AudioContext {
@@ -15,12 +16,28 @@ export function getAudioContext(): AudioContext {
   return audioContext;
 }
 
-export function resumeAudioContext(): Promise<void> {
+export async function resumeAudioContext(): Promise<void> {
   const ctx = getAudioContext();
   if (ctx.state === 'suspended') {
-    return ctx.resume();
+    await ctx.resume();
   }
-  return Promise.resolve();
+}
+
+export async function preloadSounds(): Promise<void> {
+  const ctx = getAudioContext();
+  
+  const loadPromises = SOUND_FILES.map(async (sound, index) => {
+    try {
+      const response = await fetch(sound.file);
+      const arrayBuffer = await response.arrayBuffer();
+      const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+      audioBuffers.set(index, audioBuffer);
+    } catch (error) {
+      console.error(`Failed to load sound ${sound.file}:`, error);
+    }
+  });
+  
+  await Promise.all(loadPromises);
 }
 
 export function playNote(wallIndex: number, volume: number = 0.5): void {
@@ -29,35 +46,30 @@ export function playNote(wallIndex: number, volume: number = 0.5): void {
     ctx.resume();
   }
 
-  const noteData = PENTATONIC_NOTES[wallIndex % PENTATONIC_NOTES.length];
+  const bufferIndex = wallIndex % SOUND_FILES.length;
+  const buffer = audioBuffers.get(bufferIndex);
   
-  const oscillator = ctx.createOscillator();
+  if (!buffer) {
+    console.warn(`Sound buffer not loaded for wall ${wallIndex}`);
+    return;
+  }
+  
+  const source = ctx.createBufferSource();
   const gainNode = ctx.createGain();
   
-  oscillator.type = 'sine';
-  oscillator.frequency.setValueAtTime(noteData.frequency, ctx.currentTime);
+  source.buffer = buffer;
+  gainNode.gain.setValueAtTime(volume, ctx.currentTime);
   
-  const attackTime = 0.1;
-  const sustainTime = 2.5;
-  const releaseTime = 1.5;
-  const totalDuration = attackTime + sustainTime + releaseTime;
-  
-  gainNode.gain.setValueAtTime(0, ctx.currentTime);
-  gainNode.gain.linearRampToValueAtTime(volume * 0.15, ctx.currentTime + attackTime);
-  gainNode.gain.setValueAtTime(volume * 0.15, ctx.currentTime + attackTime + sustainTime);
-  gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + totalDuration);
-  
-  oscillator.connect(gainNode);
+  source.connect(gainNode);
   gainNode.connect(ctx.destination);
   
-  oscillator.start(ctx.currentTime);
-  oscillator.stop(ctx.currentTime + totalDuration);
+  source.start(0);
 }
 
 export function getNoteLabel(wallIndex: number): string {
-  return PENTATONIC_NOTES[wallIndex % PENTATONIC_NOTES.length].note;
+  return SOUND_FILES[wallIndex % SOUND_FILES.length].note;
 }
 
-export function getAllNotes(): typeof PENTATONIC_NOTES {
-  return PENTATONIC_NOTES;
+export function getAllNotes(): { note: string; file: string }[] {
+  return SOUND_FILES;
 }
