@@ -2,11 +2,11 @@ let audioContext: AudioContext | null = null;
 const audioBuffers: Map<number, AudioBuffer> = new Map();
 
 const SOUND_FILES = [
-  { note: 'C', file: '/sounds/BOS_CCS_Synth_Pad_One_Shot_Celestial_C_1766244226101.wav' },
-  { note: 'D', file: '/sounds/BOS_CCS_Synth_Pad_One_Shot_Mute_D_1766244226101.wav' },
-  { note: 'E', file: '/sounds/BOS_CCS_Synth_Pad_One_Shot_Celestial_C_2_1766244226100.wav' },
-  { note: 'G', file: '/sounds/BOS_CCS_Synth_Pad_One_Shot_Particles_G_1766244226101.wav' },
-  { note: 'A', file: '/sounds/BOS_CCS_Synth_Pad_One_Shot_End_A_1766244226100.wav' },
+  { note: 'DO', file: '/sounds/DO__1766249463731.wav' },
+  { note: 'RE', file: '/sounds/RE_1766249463731.wav' },
+  { note: 'MI', file: '/sounds/MI_1766249463731.wav' },
+  { note: 'SOL', file: '/sounds/SOL__1766249463730.wav' },
+  { note: 'LA', file: '/sounds/LA__1766249463729.wav' },
 ];
 
 export function getAudioContext(): AudioContext {
