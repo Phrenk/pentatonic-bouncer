@@ -1,0 +1,281 @@
+import { useRef, useEffect, useState, useCallback } from 'react';
+import { 
+  generatePentagonVertices, 
+  getWalls, 
+  checkCollision, 
+  reflectVelocity, 
+  initializeBall,
+  type Ball,
+  type Wall,
+  type Point 
+} from '@/lib/physics';
+import { playNote, getNoteLabel, resumeAudioContext } from '@/lib/audio';
+
+interface PentagonCanvasProps {
+  isPlaying: boolean;
+  speed: number;
+  volume: number;
+  onBounce: (wallIndex: number, noteLabel: string) => void;
+  onBounceCountChange: (count: number) => void;
+}
+
+const WALL_COLORS = [
+  'hsl(262, 83%, 58%)',
+  'hsl(292, 65%, 50%)',
+  'hsl(232, 60%, 48%)',
+  'hsl(282, 55%, 52%)',
+  'hsl(242, 58%, 46%)',
+];
+
+export function PentagonCanvas({ 
+  isPlaying, 
+  speed, 
+  volume, 
+  onBounce,
+  onBounceCountChange 
+}: PentagonCanvasProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationRef = useRef<number>();
+  const ballRef = useRef<Ball | null>(null);
+  const verticesRef = useRef<Point[]>([]);
+  const wallsRef = useRef<Wall[]>([]);
+  const lastCollisionRef = useRef<number>(-1);
+  const collisionCooldownRef = useRef<number>(0);
+  const flashingWallsRef = useRef<Map<number, number>>(new Map());
+  const bounceCountRef = useRef<number>(0);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+  const updateDimensions = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const container = canvas.parentElement;
+    if (!container) return;
+    
+    const rect = container.getBoundingClientRect();
+    const size = Math.min(rect.width, rect.height) * 0.95;
+    
+    setDimensions({ width: size, height: size });
+  }, []);
+
+  useEffect(() => {
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, [updateDimensions]);
+
+  useEffect(() => {
+    if (dimensions.width === 0) return;
+    
+    const centerX = dimensions.width / 2;
+    const centerY = dimensions.height / 2;
+    const pentagonRadius = Math.min(dimensions.width, dimensions.height) * 0.4;
+    
+    verticesRef.current = generatePentagonVertices(centerX, centerY, pentagonRadius);
+    wallsRef.current = getWalls(verticesRef.current);
+    
+    if (!ballRef.current) {
+      ballRef.current = initializeBall(centerX, centerY, speed);
+    }
+  }, [dimensions, speed]);
+
+  useEffect(() => {
+    if (ballRef.current) {
+      const currentSpeed = Math.sqrt(ballRef.current.vx ** 2 + ballRef.current.vy ** 2);
+      if (currentSpeed > 0) {
+        const ratio = speed / currentSpeed;
+        ballRef.current.vx *= ratio;
+        ballRef.current.vy *= ratio;
+      }
+    }
+  }, [speed]);
+
+  const draw = useCallback((ctx: CanvasRenderingContext2D) => {
+    const { width, height } = dimensions;
+    
+    ctx.clearRect(0, 0, width, height);
+    
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, width * 0.5);
+    gradient.addColorStop(0, 'hsla(262, 83%, 58%, 0.08)');
+    gradient.addColorStop(1, 'transparent');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+    
+    const vertices = verticesRef.current;
+    const walls = wallsRef.current;
+    
+    walls.forEach((wall, index) => {
+      const flashIntensity = flashingWallsRef.current.get(index) || 0;
+      
+      ctx.beginPath();
+      ctx.moveTo(wall.start.x, wall.start.y);
+      ctx.lineTo(wall.end.x, wall.end.y);
+      
+      if (flashIntensity > 0) {
+        ctx.shadowColor = WALL_COLORS[index];
+        ctx.shadowBlur = 20 * flashIntensity;
+        ctx.strokeStyle = WALL_COLORS[index];
+        ctx.lineWidth = 4 + 2 * flashIntensity;
+      } else {
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = WALL_COLORS[index];
+        ctx.lineWidth = 3;
+      }
+      
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    });
+    
+    ctx.shadowBlur = 0;
+    
+    vertices.forEach((vertex, index) => {
+      const flashIntensity = flashingWallsRef.current.get(index) || 0;
+      const nextFlashIntensity = flashingWallsRef.current.get((index + 4) % 5) || 0;
+      const combinedIntensity = Math.max(flashIntensity, nextFlashIntensity);
+      
+      ctx.beginPath();
+      ctx.arc(vertex.x, vertex.y, 4 + combinedIntensity * 2, 0, Math.PI * 2);
+      ctx.fillStyle = 'hsl(var(--foreground))';
+      ctx.fill();
+    });
+    
+    const ball = ballRef.current;
+    if (ball) {
+      const ballGradient = ctx.createRadialGradient(
+        ball.x - ball.radius * 0.3, 
+        ball.y - ball.radius * 0.3, 
+        0, 
+        ball.x, 
+        ball.y, 
+        ball.radius
+      );
+      ballGradient.addColorStop(0, 'hsl(262, 83%, 75%)');
+      ballGradient.addColorStop(0.7, 'hsl(262, 83%, 58%)');
+      ballGradient.addColorStop(1, 'hsl(262, 83%, 45%)');
+      
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+      ctx.fillStyle = ballGradient;
+      ctx.fill();
+      
+      ctx.shadowColor = 'hsl(262, 83%, 58%)';
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+      ctx.strokeStyle = 'hsla(262, 83%, 70%, 0.5)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+  }, [dimensions]);
+
+  const update = useCallback(() => {
+    const ball = ballRef.current;
+    const walls = wallsRef.current;
+    
+    if (!ball || walls.length === 0) return;
+    
+    ball.x += ball.vx;
+    ball.y += ball.vy;
+    
+    if (collisionCooldownRef.current > 0) {
+      collisionCooldownRef.current--;
+    }
+    
+    for (const wall of walls) {
+      if (checkCollision(ball, wall) && collisionCooldownRef.current === 0) {
+        if (lastCollisionRef.current !== wall.index) {
+          const newVelocity = reflectVelocity(ball, wall);
+          ball.vx = newVelocity.vx;
+          ball.vy = newVelocity.vy;
+          
+          lastCollisionRef.current = wall.index;
+          collisionCooldownRef.current = 5;
+          
+          flashingWallsRef.current.set(wall.index, 1);
+          
+          playNote(wall.index, volume);
+          
+          bounceCountRef.current++;
+          onBounceCountChange(bounceCountRef.current);
+          onBounce(wall.index, getNoteLabel(wall.index));
+          
+          break;
+        }
+      }
+    }
+    
+    flashingWallsRef.current.forEach((intensity, index) => {
+      const newIntensity = intensity - 0.05;
+      if (newIntensity <= 0) {
+        flashingWallsRef.current.delete(index);
+      } else {
+        flashingWallsRef.current.set(index, newIntensity);
+      }
+    });
+  }, [volume, onBounce, onBounceCountChange]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || dimensions.width === 0) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    const animate = () => {
+      if (isPlaying) {
+        update();
+      }
+      draw(ctx);
+      animationRef.current = requestAnimationFrame(animate);
+    };
+    
+    animationRef.current = requestAnimationFrame(animate);
+    
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [isPlaying, draw, update, dimensions]);
+
+  const handleCanvasClick = useCallback(async () => {
+    await resumeAudioContext();
+  }, []);
+
+  const resetBall = useCallback(() => {
+    const centerX = dimensions.width / 2;
+    const centerY = dimensions.height / 2;
+    ballRef.current = initializeBall(centerX, centerY, speed);
+    bounceCountRef.current = 0;
+    onBounceCountChange(0);
+    lastCollisionRef.current = -1;
+    flashingWallsRef.current.clear();
+  }, [dimensions, speed, onBounceCountChange]);
+
+  useEffect(() => {
+    (window as any).resetPentagonBall = resetBall;
+    return () => {
+      delete (window as any).resetPentagonBall;
+    };
+  }, [resetBall]);
+
+  return (
+    <div className="relative w-full h-full flex items-center justify-center">
+      <canvas
+        ref={canvasRef}
+        width={dimensions.width}
+        height={dimensions.height}
+        onClick={handleCanvasClick}
+        className="cursor-pointer"
+        style={{ 
+          width: dimensions.width || '100%', 
+          height: dimensions.height || '100%' 
+        }}
+        data-testid="canvas-pentagon"
+      />
+    </div>
+  );
+}
