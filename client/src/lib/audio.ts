@@ -37,14 +37,21 @@ export function playNote(wallIndex: number, volume: number = 0.5): void {
   oscillator.type = 'sine';
   oscillator.frequency.setValueAtTime(noteData.frequency, ctx.currentTime);
   
-  gainNode.gain.setValueAtTime(volume * 0.3, ctx.currentTime);
-  gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+  const attackTime = 0.1;
+  const sustainTime = 2.5;
+  const releaseTime = 1.5;
+  const totalDuration = attackTime + sustainTime + releaseTime;
+  
+  gainNode.gain.setValueAtTime(0, ctx.currentTime);
+  gainNode.gain.linearRampToValueAtTime(volume * 0.15, ctx.currentTime + attackTime);
+  gainNode.gain.setValueAtTime(volume * 0.15, ctx.currentTime + attackTime + sustainTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + totalDuration);
   
   oscillator.connect(gainNode);
   gainNode.connect(ctx.destination);
   
   oscillator.start(ctx.currentTime);
-  oscillator.stop(ctx.currentTime + 0.8);
+  oscillator.stop(ctx.currentTime + totalDuration);
 }
 
 export function getNoteLabel(wallIndex: number): string {

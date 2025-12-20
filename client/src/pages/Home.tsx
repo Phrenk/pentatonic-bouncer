@@ -12,7 +12,7 @@ const MAX_HISTORY_LENGTH = 8;
 
 export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [speed, setSpeed] = useState(3);
+  const [speed, setSpeed] = useState(1);
   const [volume, setVolume] = useState(0.5);
   const [currentNote, setCurrentNote] = useState('');
   const [bounceCount, setBounceCount] = useState(0);
