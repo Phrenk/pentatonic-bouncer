@@ -5,11 +5,12 @@ import {
   checkCollision, 
   reflectVelocity, 
   initializeBall,
+  checkLineCrossing,
   type Ball,
   type Wall,
   type Point 
 } from '@/lib/physics';
-import { playNote, getNoteLabel, resumeAudioContext } from '@/lib/audio';
+import { playNote, getNoteLabel, playInnerNote, resumeAudioContext } from '@/lib/audio';
 
 interface PentagonCanvasProps {
   isPlaying: boolean;
@@ -27,6 +28,14 @@ const WALL_COLORS = [
   'hsl(242, 58%, 46%)',
 ];
 
+const INNER_WALL_COLORS = [
+  'hsl(180, 70%, 45%)',
+  'hsl(160, 65%, 42%)',
+  'hsl(200, 60%, 48%)',
+  'hsl(170, 55%, 44%)',
+  'hsl(190, 58%, 46%)',
+];
+
 export function PentagonCanvas({ 
   isPlaying, 
   speed, 
@@ -39,9 +48,14 @@ export function PentagonCanvas({
   const ballRef = useRef<Ball | null>(null);
   const verticesRef = useRef<Point[]>([]);
   const wallsRef = useRef<Wall[]>([]);
+  const innerVerticesRef = useRef<Point[]>([]);
+  const innerWallsRef = useRef<Wall[]>([]);
   const lastCollisionRef = useRef<number>(-1);
   const collisionCooldownRef = useRef<number>(0);
   const flashingWallsRef = useRef<Map<number, number>>(new Map());
+  const flashingInnerWallsRef = useRef<Map<number, number>>(new Map());
+  const innerCrossedRef = useRef<Set<number>>(new Set());
+  const prevBallPosRef = useRef<Point | null>(null);
   const bounceCountRef = useRef<number>(0);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
@@ -70,9 +84,13 @@ export function PentagonCanvas({
     const centerX = dimensions.width / 2;
     const centerY = dimensions.height / 2;
     const pentagonRadius = Math.min(dimensions.width, dimensions.height) * 0.4;
+    const innerRadius = pentagonRadius * 0.5;
     
     verticesRef.current = generatePentagonVertices(centerX, centerY, pentagonRadius);
     wallsRef.current = getWalls(verticesRef.current);
+    
+    innerVerticesRef.current = generatePentagonVertices(centerX, centerY, innerRadius);
+    innerWallsRef.current = getWalls(innerVerticesRef.current);
     
     if (!ballRef.current) {
       ballRef.current = initializeBall(centerX, centerY, speed);
@@ -141,6 +159,44 @@ export function PentagonCanvas({
       ctx.fill();
     });
     
+    const innerWalls = innerWallsRef.current;
+    const innerVertices = innerVerticesRef.current;
+    
+    innerWalls.forEach((wall, index) => {
+      const flashIntensity = flashingInnerWallsRef.current.get(index) || 0;
+      
+      ctx.beginPath();
+      ctx.moveTo(wall.start.x, wall.start.y);
+      ctx.lineTo(wall.end.x, wall.end.y);
+      
+      if (flashIntensity > 0) {
+        ctx.shadowColor = INNER_WALL_COLORS[index];
+        ctx.shadowBlur = 15 * flashIntensity;
+        ctx.strokeStyle = INNER_WALL_COLORS[index];
+        ctx.lineWidth = 2 + 2 * flashIntensity;
+      } else {
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = INNER_WALL_COLORS[index];
+        ctx.lineWidth = 2;
+      }
+      
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    });
+    
+    ctx.shadowBlur = 0;
+    
+    innerVertices.forEach((vertex, index) => {
+      const flashIntensity = flashingInnerWallsRef.current.get(index) || 0;
+      const nextFlashIntensity = flashingInnerWallsRef.current.get((index + 4) % 5) || 0;
+      const combinedIntensity = Math.max(flashIntensity, nextFlashIntensity);
+      
+      ctx.beginPath();
+      ctx.arc(vertex.x, vertex.y, 3 + combinedIntensity * 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = 'hsl(var(--foreground) / 0.7)';
+      ctx.fill();
+    });
+    
     const ball = ballRef.current;
     if (ball) {
       const ballGradient = ctx.createRadialGradient(
@@ -174,11 +230,16 @@ export function PentagonCanvas({
   const update = useCallback(() => {
     const ball = ballRef.current;
     const walls = wallsRef.current;
+    const innerWalls = innerWallsRef.current;
     
     if (!ball || walls.length === 0) return;
     
+    const prevPos = prevBallPosRef.current || { x: ball.x, y: ball.y };
+    
     ball.x += ball.vx;
     ball.y += ball.vy;
+    
+    const currentPos = { x: ball.x, y: ball.y };
     
     if (collisionCooldownRef.current > 0) {
       collisionCooldownRef.current--;
@@ -207,12 +268,35 @@ export function PentagonCanvas({
       }
     }
     
+    for (const innerWall of innerWalls) {
+      const crossed = checkLineCrossing(prevPos, currentPos, innerWall.start, innerWall.end);
+      
+      if (crossed && !innerCrossedRef.current.has(innerWall.index)) {
+        innerCrossedRef.current.add(innerWall.index);
+        flashingInnerWallsRef.current.set(innerWall.index, 1);
+        playInnerNote(innerWall.index, volume);
+      } else if (!crossed && innerCrossedRef.current.has(innerWall.index)) {
+        innerCrossedRef.current.delete(innerWall.index);
+      }
+    }
+    
+    prevBallPosRef.current = currentPos;
+    
     flashingWallsRef.current.forEach((intensity, index) => {
       const newIntensity = intensity - 0.05;
       if (newIntensity <= 0) {
         flashingWallsRef.current.delete(index);
       } else {
         flashingWallsRef.current.set(index, newIntensity);
+      }
+    });
+    
+    flashingInnerWallsRef.current.forEach((intensity, index) => {
+      const newIntensity = intensity - 0.03;
+      if (newIntensity <= 0) {
+        flashingInnerWallsRef.current.delete(index);
+      } else {
+        flashingInnerWallsRef.current.set(index, newIntensity);
       }
     });
   }, [volume, onBounce, onBounceCountChange]);
@@ -253,6 +337,9 @@ export function PentagonCanvas({
     onBounceCountChange(0);
     lastCollisionRef.current = -1;
     flashingWallsRef.current.clear();
+    flashingInnerWallsRef.current.clear();
+    innerCrossedRef.current.clear();
+    prevBallPosRef.current = null;
   }, [dimensions, speed, onBounceCountChange]);
 
   useEffect(() => {

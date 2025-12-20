@@ -1,12 +1,20 @@
 let audioContext: AudioContext | null = null;
-const audioBuffers: Map<number, AudioBuffer> = new Map();
+const audioBuffers: Map<string, AudioBuffer> = new Map();
 
-const SOUND_FILES = [
+const OUTER_SOUND_FILES = [
   { note: 'DO', file: '/sounds/DO__1766249463731.wav' },
   { note: 'RE', file: '/sounds/RE_1766249463731.wav' },
   { note: 'MI', file: '/sounds/MI_1766249463731.wav' },
   { note: 'SOL', file: '/sounds/SOL__1766249463730.wav' },
   { note: 'LA', file: '/sounds/LA__1766249463729.wav' },
+];
+
+const INNER_SOUND_FILES = [
+  { note: 'C', file: '/sounds/inner/GIO_HEAL_bowls_fluid_C_1766255804000.wav' },
+  { note: 'D', file: '/sounds/inner/GIO_HEAL_bowls_medium_soft_D_1766255803999.wav' },
+  { note: 'E', file: '/sounds/inner/GIO_HEAL_kailani_hit_high_E_1766255803999.wav' },
+  { note: 'G', file: '/sounds/inner/GIO_HEAL_bowls_big_soft_G_1766255803999.wav' },
+  { note: 'A', file: '/sounds/inner/GIO_HEAL_kalimba_single_note_high_A_1766255803998.wav' },
 ];
 
 export function getAudioContext(): AudioContext {
@@ -26,12 +34,17 @@ export async function resumeAudioContext(): Promise<void> {
 export async function preloadSounds(): Promise<void> {
   const ctx = getAudioContext();
   
-  const loadPromises = SOUND_FILES.map(async (sound, index) => {
+  const allSounds = [
+    ...OUTER_SOUND_FILES.map((s, i) => ({ ...s, key: `outer_${i}` })),
+    ...INNER_SOUND_FILES.map((s, i) => ({ ...s, key: `inner_${i}` })),
+  ];
+  
+  const loadPromises = allSounds.map(async (sound) => {
     try {
       const response = await fetch(sound.file);
       const arrayBuffer = await response.arrayBuffer();
       const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
-      audioBuffers.set(index, audioBuffer);
+      audioBuffers.set(sound.key, audioBuffer);
     } catch (error) {
       console.error(`Failed to load sound ${sound.file}:`, error);
     }
@@ -46,11 +59,37 @@ export function playNote(wallIndex: number, volume: number = 0.5): void {
     ctx.resume();
   }
 
-  const bufferIndex = wallIndex % SOUND_FILES.length;
-  const buffer = audioBuffers.get(bufferIndex);
+  const bufferIndex = wallIndex % OUTER_SOUND_FILES.length;
+  const buffer = audioBuffers.get(`outer_${bufferIndex}`);
   
   if (!buffer) {
-    console.warn(`Sound buffer not loaded for wall ${wallIndex}`);
+    console.warn(`Sound buffer not loaded for outer wall ${wallIndex}`);
+    return;
+  }
+  
+  const source = ctx.createBufferSource();
+  const gainNode = ctx.createGain();
+  
+  source.buffer = buffer;
+  gainNode.gain.setValueAtTime(volume, ctx.currentTime);
+  
+  source.connect(gainNode);
+  gainNode.connect(ctx.destination);
+  
+  source.start(0);
+}
+
+export function playInnerNote(wallIndex: number, volume: number = 0.5): void {
+  const ctx = getAudioContext();
+  if (ctx.state === 'suspended') {
+    ctx.resume();
+  }
+
+  const bufferIndex = wallIndex % INNER_SOUND_FILES.length;
+  const buffer = audioBuffers.get(`inner_${bufferIndex}`);
+  
+  if (!buffer) {
+    console.warn(`Sound buffer not loaded for inner wall ${wallIndex}`);
     return;
   }
   
@@ -67,9 +106,13 @@ export function playNote(wallIndex: number, volume: number = 0.5): void {
 }
 
 export function getNoteLabel(wallIndex: number): string {
-  return SOUND_FILES[wallIndex % SOUND_FILES.length].note;
+  return OUTER_SOUND_FILES[wallIndex % OUTER_SOUND_FILES.length].note;
+}
+
+export function getInnerNoteLabel(wallIndex: number): string {
+  return INNER_SOUND_FILES[wallIndex % INNER_SOUND_FILES.length].note;
 }
 
 export function getAllNotes(): { note: string; file: string }[] {
-  return SOUND_FILES;
+  return OUTER_SOUND_FILES;
 }

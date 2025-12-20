@@ -140,3 +140,42 @@ export function initializeBall(centerX: number, centerY: number, speed: number):
     radius: 8,
   };
 }
+
+export function checkLineCrossing(
+  prevPos: Point,
+  currentPos: Point,
+  lineStart: Point,
+  lineEnd: Point
+): boolean {
+  const d1 = crossProduct(
+    subtractPoints(lineEnd, lineStart),
+    subtractPoints(prevPos, lineStart)
+  );
+  const d2 = crossProduct(
+    subtractPoints(lineEnd, lineStart),
+    subtractPoints(currentPos, lineStart)
+  );
+  
+  if ((d1 > 0 && d2 > 0) || (d1 < 0 && d2 < 0)) {
+    return false;
+  }
+  
+  const d3 = crossProduct(
+    subtractPoints(currentPos, prevPos),
+    subtractPoints(lineStart, prevPos)
+  );
+  const d4 = crossProduct(
+    subtractPoints(currentPos, prevPos),
+    subtractPoints(lineEnd, prevPos)
+  );
+  
+  if ((d3 > 0 && d4 > 0) || (d3 < 0 && d4 < 0)) {
+    return false;
+  }
+  
+  return true;
+}
+
+function crossProduct(v1: Point, v2: Point): number {
+  return v1.x * v2.y - v1.y * v2.x;
+}
