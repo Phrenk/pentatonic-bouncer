@@ -9,13 +9,31 @@ const OUTER_SOUND_FILES = [
   { note: 'LA', file: '/sounds/LA__1766249463729.wav' },
 ];
 
-const INNER_SOUND_FILES = [
+const INNER_SOUND_SET_A = [
   { note: 'C', file: '/sounds/inner/C_4_-tub_bell_1766306626209.wav' },
   { note: 'D', file: '/sounds/inner/D_4_-tub_bell_1766306626208.wav' },
   { note: 'E', file: '/sounds/inner/E_4_-tub_bell_1766306626208.wav' },
   { note: 'G', file: '/sounds/inner/G_4_-tub_bell_1766306626208.wav' },
   { note: 'A', file: '/sounds/inner/A_4_-tub_bell_1766306626207.wav' },
 ];
+
+const INNER_SOUND_SET_B = [
+  { note: 'C', file: '/sounds/inner/C_1_-tub_bell_1766307532705.wav' },
+  { note: 'D', file: '/sounds/inner/D_1_-tub_bell_1766307532705.wav' },
+  { note: 'E', file: '/sounds/inner/E_1_-tub_bell_1766307532704.wav' },
+  { note: 'G', file: '/sounds/inner/G_1_-tub_bell_1766307532704.wav' },
+  { note: 'A', file: '/sounds/inner/A_1_-tub_bell_1766307532703.wav' },
+];
+
+let currentInnerSet: 'A' | 'B' = 'A';
+let cycleStartTime: number = Date.now();
+const CYCLE_DURATION = 10 * 60 * 1000;
+
+function getCurrentInnerSet(): 'A' | 'B' {
+  const elapsed = Date.now() - cycleStartTime;
+  const cycleCount = Math.floor(elapsed / CYCLE_DURATION);
+  return cycleCount % 2 === 0 ? 'A' : 'B';
+}
 
 export function getAudioContext(): AudioContext {
   if (!audioContext) {
@@ -36,7 +54,8 @@ export async function preloadSounds(): Promise<void> {
   
   const allSounds = [
     ...OUTER_SOUND_FILES.map((s, i) => ({ ...s, key: `outer_${i}` })),
-    ...INNER_SOUND_FILES.map((s, i) => ({ ...s, key: `inner_${i}` })),
+    ...INNER_SOUND_SET_A.map((s, i) => ({ ...s, key: `innerA_${i}` })),
+    ...INNER_SOUND_SET_B.map((s, i) => ({ ...s, key: `innerB_${i}` })),
   ];
   
   const loadPromises = allSounds.map(async (sound) => {
@@ -51,6 +70,7 @@ export async function preloadSounds(): Promise<void> {
   });
   
   await Promise.all(loadPromises);
+  cycleStartTime = Date.now();
 }
 
 export function playNote(wallIndex: number, volume: number = 0.5): void {
@@ -85,8 +105,11 @@ export function playInnerNote(wallIndex: number, volume: number = 0.5): void {
     ctx.resume();
   }
 
-  const bufferIndex = wallIndex % INNER_SOUND_FILES.length;
-  const buffer = audioBuffers.get(`inner_${bufferIndex}`);
+  const currentSet = getCurrentInnerSet();
+  const setFiles = currentSet === 'A' ? INNER_SOUND_SET_A : INNER_SOUND_SET_B;
+  const bufferIndex = wallIndex % setFiles.length;
+  const bufferKey = `inner${currentSet}_${bufferIndex}`;
+  const buffer = audioBuffers.get(bufferKey);
   
   if (!buffer) {
     console.warn(`Sound buffer not loaded for inner wall ${wallIndex}`);
@@ -110,9 +133,15 @@ export function getNoteLabel(wallIndex: number): string {
 }
 
 export function getInnerNoteLabel(wallIndex: number): string {
-  return INNER_SOUND_FILES[wallIndex % INNER_SOUND_FILES.length].note;
+  const currentSet = getCurrentInnerSet();
+  const setFiles = currentSet === 'A' ? INNER_SOUND_SET_A : INNER_SOUND_SET_B;
+  return setFiles[wallIndex % setFiles.length].note;
 }
 
 export function getAllNotes(): { note: string; file: string }[] {
   return OUTER_SOUND_FILES;
+}
+
+export function getCurrentInnerSoundSet(): 'A' | 'B' {
+  return getCurrentInnerSet();
 }
