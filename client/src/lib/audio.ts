@@ -10,11 +10,11 @@ const OUTER_SOUND_FILES = [
 ];
 
 const INNER_SOUND_FILES = [
-  { note: 'C', file: '/sounds/inner/GIO_HEAL_bowls_fluid_C_1766255804000.wav' },
-  { note: 'D', file: '/sounds/inner/GIO_HEAL_bowls_medium_soft_D_1766255803999.wav' },
-  { note: 'E', file: '/sounds/inner/GIO_HEAL_kailani_hit_high_E_1766255803999.wav' },
-  { note: 'G', file: '/sounds/inner/GIO_HEAL_bowls_big_soft_G_1766255803999.wav' },
-  { note: 'A', file: '/sounds/inner/GIO_HEAL_kalimba_single_note_high_A_1766255803998.wav' },
+  { note: 'C', file: '/sounds/inner/C_4_-tub_bell_1766306626209.wav' },
+  { note: 'D', file: '/sounds/inner/D_4_-tub_bell_1766306626208.wav' },
+  { note: 'E', file: '/sounds/inner/E_4_-tub_bell_1766306626208.wav' },
+  { note: 'G', file: '/sounds/inner/G_4_-tub_bell_1766306626208.wav' },
+  { note: 'A', file: '/sounds/inner/A_4_-tub_bell_1766306626207.wav' },
 ];
 
 export function getAudioContext(): AudioContext {
