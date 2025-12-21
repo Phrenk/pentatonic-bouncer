@@ -18,19 +18,19 @@ const OUTER_SOUND_SET_B = [
 ];
 
 const INNER_SOUND_SET_A = [
-  { note: 'C', file: '/sounds/inner/C_4_-tub_bell_1766306626209.wav' },
-  { note: 'D', file: '/sounds/inner/D_4_-tub_bell_1766306626208.wav' },
-  { note: 'E', file: '/sounds/inner/E_4_-tub_bell_1766306626208.wav' },
-  { note: 'G', file: '/sounds/inner/G_4_-tub_bell_1766306626208.wav' },
-  { note: 'A', file: '/sounds/inner/A_4_-tub_bell_1766306626207.wav' },
+  { note: 'C', file: '/sounds/inner/C_4_tub_bell_riv_1766340955097.wav' },
+  { note: 'D', file: '/sounds/inner/D_4_4_tub_bell_riv_1766340955098.wav' },
+  { note: 'E', file: '/sounds/inner/E_4_tub_bell_riv_1766340955098.wav' },
+  { note: 'G', file: '/sounds/inner/G_4_tub_bell_riv_1766340955098.wav' },
+  { note: 'C5', file: '/sounds/inner/C_5_tub_bell_riv_1766340955098.wav' },
 ];
 
 const INNER_SOUND_SET_B = [
-  { note: 'C', file: '/sounds/inner/C_1_-tub_bell_1766307532705.wav' },
-  { note: 'D', file: '/sounds/inner/D_1_-tub_bell_1766307532705.wav' },
-  { note: 'E', file: '/sounds/inner/E_1_-tub_bell_1766307532704.wav' },
-  { note: 'G', file: '/sounds/inner/G_1_-tub_bell_1766307532704.wav' },
-  { note: 'A', file: '/sounds/inner/A_1_-tub_bell_1766307532703.wav' },
+  { note: 'C', file: '/sounds/inner/C_4_tub_bell_riv_1766340955097.wav' },
+  { note: 'D', file: '/sounds/inner/D_4_4_tub_bell_riv_1766340955098.wav' },
+  { note: 'E', file: '/sounds/inner/E_4_tub_bell_riv_1766340955098.wav' },
+  { note: 'G', file: '/sounds/inner/G_4_tub_bell_riv_1766340955098.wav' },
+  { note: 'C5', file: '/sounds/inner/C_5_tub_bell_riv_1766340955098.wav' },
 ];
 
 let cycleStartTime: number = Date.now();
