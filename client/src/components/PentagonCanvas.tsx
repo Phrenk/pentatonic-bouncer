@@ -274,7 +274,7 @@ export function PentagonCanvas({
       if (crossed && !innerCrossedRef.current.has(innerWall.index)) {
         innerCrossedRef.current.add(innerWall.index);
         flashingInnerWallsRef.current.set(innerWall.index, 1);
-        playInnerNote(innerWall.index, volume * 0.35);
+        playInnerNote(innerWall.index, volume * 0.28);
       } else if (!crossed && innerCrossedRef.current.has(innerWall.index)) {
         innerCrossedRef.current.delete(innerWall.index);
       }
