@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { 
   generatePentagonVertices, 
+  generateGappedPentagonWalls,
   getWalls, 
   checkCollision, 
   reflectVelocity, 
@@ -84,13 +85,14 @@ export function PentagonCanvas({
     const centerX = dimensions.width / 2;
     const centerY = dimensions.height / 2;
     const pentagonRadius = Math.min(dimensions.width, dimensions.height) * 0.4;
-    const innerRadius = pentagonRadius * 0.35;
+    const originalInnerRadius = pentagonRadius * 0.35;
+    const enlargedInnerRadius = originalInnerRadius * 1.3;
     
     verticesRef.current = generatePentagonVertices(centerX, centerY, pentagonRadius);
     wallsRef.current = getWalls(verticesRef.current);
     
-    innerVerticesRef.current = generatePentagonVertices(centerX, centerY, innerRadius);
-    innerWallsRef.current = getWalls(innerVerticesRef.current);
+    innerVerticesRef.current = generatePentagonVertices(centerX, centerY, enlargedInnerRadius);
+    innerWallsRef.current = generateGappedPentagonWalls(centerX, centerY, originalInnerRadius, enlargedInnerRadius);
     
     if (!ballRef.current) {
       ballRef.current = initializeBall(centerX, centerY, speed);
@@ -160,7 +162,6 @@ export function PentagonCanvas({
     });
     
     const innerWalls = innerWallsRef.current;
-    const innerVertices = innerVerticesRef.current;
     
     innerWalls.forEach((wall, index) => {
       const flashIntensity = flashingInnerWallsRef.current.get(index) || 0;
@@ -182,20 +183,19 @@ export function PentagonCanvas({
       
       ctx.lineCap = 'round';
       ctx.stroke();
+      
+      ctx.shadowBlur = 0;
+      const endRadius = 2 + flashIntensity * 1.5;
+      ctx.beginPath();
+      ctx.arc(wall.start.x, wall.start.y, endRadius, 0, Math.PI * 2);
+      ctx.fillStyle = flashIntensity > 0 ? INNER_WALL_COLORS[index] : 'hsl(var(--foreground) / 0.5)';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(wall.end.x, wall.end.y, endRadius, 0, Math.PI * 2);
+      ctx.fill();
     });
     
     ctx.shadowBlur = 0;
-    
-    innerVertices.forEach((vertex, index) => {
-      const flashIntensity = flashingInnerWallsRef.current.get(index) || 0;
-      const nextFlashIntensity = flashingInnerWallsRef.current.get((index + 4) % 5) || 0;
-      const combinedIntensity = Math.max(flashIntensity, nextFlashIntensity);
-      
-      ctx.beginPath();
-      ctx.arc(vertex.x, vertex.y, 3 + combinedIntensity * 1.5, 0, Math.PI * 2);
-      ctx.fillStyle = 'hsl(var(--foreground) / 0.7)';
-      ctx.fill();
-    });
     
     const ball = ballRef.current;
     if (ball) {
