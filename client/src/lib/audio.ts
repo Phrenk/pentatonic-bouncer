@@ -26,11 +26,11 @@ const INNER_SOUND_SET_A = [
 ];
 
 const INNER_SOUND_SET_B = [
-  { note: 'C', file: '/sounds/inner/C_4_tub_bell_riv_1766340955097.wav' },
-  { note: 'D', file: '/sounds/inner/D_4_4_tub_bell_riv_1766340955098.wav' },
-  { note: 'E', file: '/sounds/inner/E_4_tub_bell_riv_1766340955098.wav' },
-  { note: 'G', file: '/sounds/inner/G_4_tub_bell_riv_1766340955098.wav' },
-  { note: 'C5', file: '/sounds/inner/C_5_tub_bell_riv_1766340955098.wav' },
+  { note: 'C', file: '/sounds/inner/C_2_tub_bell_riv_1766340998845.wav' },
+  { note: 'D', file: '/sounds/inner/D_2_tub_bell_riv_1766340998846.wav' },
+  { note: 'E', file: '/sounds/inner/E_2_tub_bell_riv_1766340998846.wav' },
+  { note: 'G', file: '/sounds/inner/G_2_tub_bell_riv_1766340998846.wav' },
+  { note: 'C3', file: '/sounds/inner/C_3_tub_bell_riv_1766340998846.wav' },
 ];
 
 let cycleStartTime: number = Date.now();
