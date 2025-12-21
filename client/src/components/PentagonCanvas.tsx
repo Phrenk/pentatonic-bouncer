@@ -92,7 +92,7 @@ export function PentagonCanvas({
     wallsRef.current = getWalls(verticesRef.current);
     
     innerVerticesRef.current = generatePentagonVertices(centerX, centerY, enlargedInnerRadius);
-    innerWallsRef.current = generateGappedPentagonWalls(centerX, centerY, originalInnerRadius, enlargedInnerRadius);
+    innerWallsRef.current = generateGappedPentagonWalls(centerX, centerY, originalInnerRadius * 0.7, enlargedInnerRadius);
     
     if (!ballRef.current) {
       ballRef.current = initializeBall(centerX, centerY, speed);
