@@ -86,7 +86,7 @@ export function PentagonCanvas({
     const centerY = dimensions.height / 2;
     const pentagonRadius = Math.min(dimensions.width, dimensions.height) * 0.4;
     const originalInnerRadius = pentagonRadius * 0.35;
-    const enlargedInnerRadius = originalInnerRadius * 1.3;
+    const enlargedInnerRadius = originalInnerRadius * 1.5;
     
     verticesRef.current = generatePentagonVertices(centerX, centerY, pentagonRadius);
     wallsRef.current = getWalls(verticesRef.current);
