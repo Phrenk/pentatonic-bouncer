@@ -23,8 +23,8 @@ let outerProcessedImages: HTMLCanvasElement[] = [];
 let innerProcessedImages: HTMLCanvasElement[] = [];
 let shapeLoaded = false;
 
-const outerRecentHistory: number[] = [];
-const innerRecentHistory: number[] = [];
+const outerHistory: number[] = [];
+const innerHistory: number[] = [];
 const OUTER_HISTORY_SIZE = 10;
 const INNER_HISTORY_SIZE = 5;
 
@@ -93,34 +93,35 @@ export async function loadAndProcessShape(): Promise<void> {
   }
 }
 
-function getRandomImageIndex(
-  images: HTMLCanvasElement[],
+function getNextImage(
   history: number[],
-  historySize: number
+  historySize: number,
+  imageCount: number
 ): number {
-  const availableIndices: number[] = [];
+  const windowSize = Math.min(historySize - 1, imageCount - 1);
+  const recentWindow = history.slice(-windowSize);
   
-  for (let i = 0; i < images.length; i++) {
-    if (!history.includes(i)) {
-      availableIndices.push(i);
+  const available: number[] = [];
+  for (let i = 0; i < imageCount; i++) {
+    if (!recentWindow.includes(i)) {
+      available.push(i);
     }
   }
   
-  if (availableIndices.length === 0) {
-    history.length = 0;
-    for (let i = 0; i < images.length; i++) {
-      availableIndices.push(i);
+  if (available.length === 0) {
+    for (let i = 0; i < imageCount; i++) {
+      available.push(i);
     }
   }
   
-  const selectedIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+  const selected = available[Math.floor(Math.random() * available.length)];
   
-  history.push(selectedIndex);
-  if (history.length > historySize) {
-    history.shift();
+  history.push(selected);
+  if (history.length > historySize * 2) {
+    history.splice(0, history.length - historySize);
   }
   
-  return selectedIndex;
+  return selected;
 }
 
 export interface MorphAnimation {
@@ -155,7 +156,7 @@ export function startMorph(
   wallStart: { x: number; y: number }, 
   wallEnd: { x: number; y: number }
 ): void {
-  const imageIndex = getRandomImageIndex(outerProcessedImages, outerRecentHistory, OUTER_HISTORY_SIZE);
+  const imageIndex = getNextImage(outerHistory, OUTER_HISTORY_SIZE, outerProcessedImages.length);
   
   activeOuterMorphs.set(wallIndex, {
     wallIndex,
@@ -175,7 +176,7 @@ export function startInnerMorph(
   wallStart: { x: number; y: number }, 
   wallEnd: { x: number; y: number }
 ): void {
-  const imageIndex = getRandomImageIndex(innerProcessedImages, innerRecentHistory, INNER_HISTORY_SIZE);
+  const imageIndex = getNextImage(innerHistory, INNER_HISTORY_SIZE, innerProcessedImages.length);
   
   activeInnerMorphs.set(wallIndex, {
     wallIndex,
