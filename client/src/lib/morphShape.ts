@@ -132,6 +132,7 @@ export interface MorphAnimation {
   wallStart: { x: number; y: number };
   wallEnd: { x: number; y: number };
   isInner: boolean;
+  color: string;
 }
 
 const activeOuterMorphs: Map<number, MorphAnimation> = new Map();
@@ -149,7 +150,9 @@ const INNER_FADE_IN = 1000;
 const INNER_HOLD = 2000;
 const INNER_FADE_OUT = 1000;
 const INNER_TOTAL = INNER_FADE_IN + INNER_HOLD + INNER_FADE_OUT;
-const INNER_VIBRATION = 9;
+const INNER_VIBRATION = 4.5;
+
+const IMAGE_COLORS = ['#FF0000', '#0000FF', '#FFFF00', '#000000', '#800080'];
 
 export function startMorph(
   wallIndex: number, 
@@ -157,6 +160,7 @@ export function startMorph(
   wallEnd: { x: number; y: number }
 ): void {
   const imageIndex = getNextImage(outerHistory, OUTER_HISTORY_SIZE, outerProcessedImages.length);
+  const color = IMAGE_COLORS[Math.floor(Math.random() * IMAGE_COLORS.length)];
   
   activeOuterMorphs.set(wallIndex, {
     wallIndex,
@@ -166,6 +170,7 @@ export function startMorph(
     wallStart,
     wallEnd,
     isInner: false,
+    color,
   });
   
   hiddenOuterWalls.add(wallIndex);
@@ -178,6 +183,8 @@ export function startInnerMorph(
 ): void {
   const imageIndex = getNextImage(innerHistory, INNER_HISTORY_SIZE, innerProcessedImages.length);
   
+  const color = IMAGE_COLORS[Math.floor(Math.random() * IMAGE_COLORS.length)];
+  
   activeInnerMorphs.set(wallIndex, {
     wallIndex,
     imageIndex,
@@ -186,6 +193,7 @@ export function startInnerMorph(
     wallStart,
     wallEnd,
     isInner: true,
+    color,
   });
   
   hiddenInnerWalls.add(wallIndex);
@@ -225,6 +233,20 @@ export function isInnerWallHidden(wallIndex: number): boolean {
 // Outer pentagon: PG1=0, PG2=1, PG3=2, PG4=3, PG5=4
 // Inner pentagon: PI1=0, PI2=1, PI3=2, PI4=3, PI5=4
 // Walls PG4 (index 3) and PI4 (index 3) require 180-degree image rotation
+
+function colorizeImage(sourceCanvas: HTMLCanvasElement, color: string): HTMLCanvasElement {
+  const coloredCanvas = document.createElement('canvas');
+  coloredCanvas.width = sourceCanvas.width;
+  coloredCanvas.height = sourceCanvas.height;
+  const colorCtx = coloredCanvas.getContext('2d')!;
+  
+  colorCtx.drawImage(sourceCanvas, 0, 0);
+  colorCtx.globalCompositeOperation = 'source-in';
+  colorCtx.fillStyle = color;
+  colorCtx.fillRect(0, 0, coloredCanvas.width, coloredCanvas.height);
+  
+  return coloredCanvas;
+}
 
 function drawMorphAnimation(
   ctx: CanvasRenderingContext2D,
@@ -275,6 +297,9 @@ function drawMorphAnimation(
   // Rotate 180 degrees for wall index 3 (PG4 or PI4) to fix upside-down images
   const extraRotation = morph.wallIndex === 3 ? Math.PI : 0;
   
+  // Colorize the image with the assigned color
+  const coloredCanvas = colorizeImage(shapeCanvas, morph.color);
+  
   ctx.save();
   ctx.translate(midX + vibrationX, midY + vibrationY);
   ctx.rotate(wallAngle + extraRotation);
@@ -282,7 +307,7 @@ function drawMorphAnimation(
   ctx.globalAlpha = Math.max(0, Math.min(1, opacity));
   
   ctx.drawImage(
-    shapeCanvas,
+    coloredCanvas,
     -targetWidth / 2,
     -targetHeight / 2,
     targetWidth,
