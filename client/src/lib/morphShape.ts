@@ -221,6 +221,11 @@ export function isInnerWallHidden(wallIndex: number): boolean {
   return hiddenInnerWalls.has(wallIndex);
 }
 
+// Wall naming convention (clockwise):
+// Outer pentagon: PG1=0, PG2=1, PG3=2, PG4=3, PG5=4
+// Inner pentagon: PI1=0, PI2=1, PI3=2, PI4=3, PI5=4
+// Walls PG4 (index 3) and PI4 (index 3) require 180-degree image rotation
+
 function drawMorphAnimation(
   ctx: CanvasRenderingContext2D,
   morph: MorphAnimation,
@@ -267,9 +272,12 @@ function drawMorphAnimation(
   const vibrationX = Math.sin(elapsed * 0.08) * vibrationIntensity;
   const vibrationY = Math.cos(elapsed * 0.11) * vibrationIntensity;
   
+  // Rotate 180 degrees for wall index 3 (PG4 or PI4)
+  const extraRotation = morph.wallIndex === 3 ? Math.PI : 0;
+  
   ctx.save();
   ctx.translate(midX + vibrationX, midY + vibrationY);
-  ctx.rotate(wallAngle);
+  ctx.rotate(wallAngle + extraRotation);
   
   ctx.globalAlpha = Math.max(0, Math.min(1, opacity));
   
