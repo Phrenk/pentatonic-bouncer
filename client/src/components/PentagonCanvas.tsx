@@ -22,20 +22,22 @@ interface PentagonCanvasProps {
   onBounceCountChange: (count: number) => void;
 }
 
+const BALL_BLUE = 'hsl(225, 85%, 42%)';
+
 const WALL_COLORS = [
-  'hsl(262, 83%, 58%)',
-  'hsl(292, 65%, 50%)',
-  'hsl(232, 60%, 48%)',
-  'hsl(282, 55%, 52%)',
-  'hsl(242, 58%, 46%)',
+  '#FFFFFF',
+  '#FFFFFF',
+  '#FFFFFF',
+  '#FFFFFF',
+  '#FFFFFF',
 ];
 
 const INNER_WALL_COLORS = [
-  'hsl(180, 70%, 45%)',
-  'hsl(160, 65%, 42%)',
-  'hsl(200, 60%, 48%)',
-  'hsl(170, 55%, 44%)',
-  'hsl(190, 58%, 46%)',
+  BALL_BLUE,
+  BALL_BLUE,
+  BALL_BLUE,
+  BALL_BLUE,
+  BALL_BLUE,
 ];
 
 export function PentagonCanvas({ 
@@ -131,6 +133,17 @@ export function PentagonCanvas({
     const vertices = verticesRef.current;
     const walls = wallsRef.current;
     
+    if (vertices.length >= 5) {
+      ctx.beginPath();
+      ctx.moveTo(vertices[0].x, vertices[0].y);
+      for (let i = 1; i < vertices.length; i++) {
+        ctx.lineTo(vertices[i].x, vertices[i].y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = BALL_BLUE;
+      ctx.fill();
+    }
+    
     walls.forEach((wall, index) => {
       if (isWallHidden(index)) return;
       
@@ -216,20 +229,20 @@ export function PentagonCanvas({
         ball.y, 
         ball.radius
       );
-      ballGradient.addColorStop(0, 'hsl(225, 85%, 55%)');
-      ballGradient.addColorStop(0.7, 'hsl(225, 85%, 42%)');
-      ballGradient.addColorStop(1, 'hsl(225, 85%, 32%)');
+      ballGradient.addColorStop(0, '#FFFFFF');
+      ballGradient.addColorStop(0.7, '#F0F0F0');
+      ballGradient.addColorStop(1, '#E0E0E0');
       
       ctx.beginPath();
       ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
       ctx.fillStyle = ballGradient;
       ctx.fill();
       
-      ctx.shadowColor = 'hsl(225, 85%, 42%)';
+      ctx.shadowColor = 'rgba(255, 255, 255, 0.6)';
       ctx.shadowBlur = 12;
       ctx.beginPath();
       ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-      ctx.strokeStyle = 'hsla(225, 85%, 50%, 0.5)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
       ctx.lineWidth = 2;
       ctx.stroke();
       ctx.shadowBlur = 0;
