@@ -12,7 +12,7 @@ import {
   type Point 
 } from '@/lib/physics';
 import { playNote, getNoteLabel, playInnerNote, resumeAudioContext } from '@/lib/audio';
-import { loadAndProcessShape, startMorph, drawMorphingShapes, isShapeLoaded, isWallHidden } from '@/lib/morphShape';
+import { loadAndProcessShape, startMorph, startInnerMorph, drawMorphingShapes, isShapeLoaded, isWallHidden, isInnerWallHidden } from '@/lib/morphShape';
 
 interface PentagonCanvasProps {
   isPlaying: boolean;
@@ -171,6 +171,8 @@ export function PentagonCanvas({
     const innerWalls = innerWallsRef.current;
     
     innerWalls.forEach((wall, index) => {
+      if (isInnerWallHidden(index)) return;
+      
       const flashIntensity = flashingInnerWallsRef.current.get(index) || 0;
       
       ctx.beginPath();
@@ -288,6 +290,10 @@ export function PentagonCanvas({
         innerCrossedRef.current.add(innerWall.index);
         flashingInnerWallsRef.current.set(innerWall.index, 1);
         playInnerNote(innerWall.index, volume * 0.28);
+        
+        if (isShapeLoaded()) {
+          startInnerMorph(innerWall.index, innerWall.start, innerWall.end);
+        }
       } else if (!crossed && innerCrossedRef.current.has(innerWall.index)) {
         innerCrossedRef.current.delete(innerWall.index);
       }

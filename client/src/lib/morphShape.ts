@@ -1,4 +1,4 @@
-const IMAGE_PATHS = [
+const OUTER_IMAGE_PATHS = [
   '/images/mnr_1_1766430619497.jpeg',
   '/images/mnr_2_1766430619497.jpeg',
   '/images/mnr_3__1766430619497.jpeg',
@@ -11,11 +11,22 @@ const IMAGE_PATHS = [
   '/images/mnr_10_1766430619499.jpeg',
 ];
 
-let processedImages: HTMLCanvasElement[] = [];
+const INNER_IMAGE_PATHS = [
+  '/images/mnr_1_interno__1766432005466.jpeg',
+  '/images/mnr_2_interno_1766432005466.jpeg',
+  '/images/mnr_3_interno_1766432005467.jpeg',
+  '/images/mnr_4_interno_1766432005467.jpeg',
+  '/images/mnr_5_interno_1766432005467.jpeg',
+];
+
+let outerProcessedImages: HTMLCanvasElement[] = [];
+let innerProcessedImages: HTMLCanvasElement[] = [];
 let shapeLoaded = false;
 
-const recentImageHistory: number[] = [];
-const HISTORY_SIZE = 10;
+const outerRecentHistory: number[] = [];
+const innerRecentHistory: number[] = [];
+const OUTER_HISTORY_SIZE = 10;
+const INNER_HISTORY_SIZE = 5;
 
 function extractBlackParts(img: HTMLImageElement): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
@@ -49,10 +60,8 @@ function extractBlackParts(img: HTMLImageElement): HTMLCanvasElement {
   return canvas;
 }
 
-export async function loadAndProcessShape(): Promise<void> {
-  if (shapeLoaded) return;
-  
-  const loadPromises = IMAGE_PATHS.map((path) => {
+async function loadImages(paths: string[]): Promise<HTMLCanvasElement[]> {
+  const loadPromises = paths.map((path) => {
     return new Promise<HTMLCanvasElement>((resolve, reject) => {
       const img = new Image();
       img.crossOrigin = 'anonymous';
@@ -64,9 +73,19 @@ export async function loadAndProcessShape(): Promise<void> {
       img.src = path;
     });
   });
+  return Promise.all(loadPromises);
+}
+
+export async function loadAndProcessShape(): Promise<void> {
+  if (shapeLoaded) return;
   
   try {
-    processedImages = await Promise.all(loadPromises);
+    const [outer, inner] = await Promise.all([
+      loadImages(OUTER_IMAGE_PATHS),
+      loadImages(INNER_IMAGE_PATHS),
+    ]);
+    outerProcessedImages = outer;
+    innerProcessedImages = inner;
     shapeLoaded = true;
   } catch (error) {
     console.error('Error loading morph images:', error);
@@ -74,27 +93,31 @@ export async function loadAndProcessShape(): Promise<void> {
   }
 }
 
-function getRandomImageIndex(): number {
+function getRandomImageIndex(
+  images: HTMLCanvasElement[],
+  history: number[],
+  historySize: number
+): number {
   const availableIndices: number[] = [];
   
-  for (let i = 0; i < processedImages.length; i++) {
-    if (!recentImageHistory.includes(i)) {
+  for (let i = 0; i < images.length; i++) {
+    if (!history.includes(i)) {
       availableIndices.push(i);
     }
   }
   
   if (availableIndices.length === 0) {
-    recentImageHistory.length = 0;
-    for (let i = 0; i < processedImages.length; i++) {
+    history.length = 0;
+    for (let i = 0; i < images.length; i++) {
       availableIndices.push(i);
     }
   }
   
   const selectedIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
   
-  recentImageHistory.push(selectedIndex);
-  if (recentImageHistory.length > HISTORY_SIZE) {
-    recentImageHistory.shift();
+  history.push(selectedIndex);
+  if (history.length > historySize) {
+    history.shift();
   }
   
   return selectedIndex;
@@ -107,105 +130,166 @@ export interface MorphAnimation {
   duration: number;
   wallStart: { x: number; y: number };
   wallEnd: { x: number; y: number };
+  isInner: boolean;
 }
 
-const activeMorphs: Map<number, MorphAnimation> = new Map();
-const hiddenWalls: Set<number> = new Set();
+const activeOuterMorphs: Map<number, MorphAnimation> = new Map();
+const activeInnerMorphs: Map<number, MorphAnimation> = new Map();
+const hiddenOuterWalls: Set<number> = new Set();
+const hiddenInnerWalls: Set<number> = new Set();
 
-const FADE_IN_DURATION = 2000;
-const HOLD_DURATION = 2000;
-const FADE_OUT_DURATION = 2000;
-const TOTAL_DURATION = FADE_IN_DURATION + HOLD_DURATION + FADE_OUT_DURATION;
+const OUTER_FADE_IN = 2000;
+const OUTER_HOLD = 2000;
+const OUTER_FADE_OUT = 2000;
+const OUTER_TOTAL = OUTER_FADE_IN + OUTER_HOLD + OUTER_FADE_OUT;
+const OUTER_VIBRATION = 6;
+
+const INNER_FADE_IN = 1000;
+const INNER_HOLD = 2000;
+const INNER_FADE_OUT = 1000;
+const INNER_TOTAL = INNER_FADE_IN + INNER_HOLD + INNER_FADE_OUT;
+const INNER_VIBRATION = 9;
 
 export function startMorph(
   wallIndex: number, 
   wallStart: { x: number; y: number }, 
   wallEnd: { x: number; y: number }
 ): void {
-  const imageIndex = getRandomImageIndex();
+  const imageIndex = getRandomImageIndex(outerProcessedImages, outerRecentHistory, OUTER_HISTORY_SIZE);
   
-  activeMorphs.set(wallIndex, {
+  activeOuterMorphs.set(wallIndex, {
     wallIndex,
     imageIndex,
     startTime: performance.now(),
-    duration: TOTAL_DURATION,
+    duration: OUTER_TOTAL,
     wallStart,
     wallEnd,
+    isInner: false,
   });
   
-  hiddenWalls.add(wallIndex);
+  hiddenOuterWalls.add(wallIndex);
+}
+
+export function startInnerMorph(
+  wallIndex: number, 
+  wallStart: { x: number; y: number }, 
+  wallEnd: { x: number; y: number }
+): void {
+  const imageIndex = getRandomImageIndex(innerProcessedImages, innerRecentHistory, INNER_HISTORY_SIZE);
+  
+  activeInnerMorphs.set(wallIndex, {
+    wallIndex,
+    imageIndex,
+    startTime: performance.now(),
+    duration: INNER_TOTAL,
+    wallStart,
+    wallEnd,
+    isInner: true,
+  });
+  
+  hiddenInnerWalls.add(wallIndex);
 }
 
 export function getActiveMorphs(): Map<number, MorphAnimation> {
   const now = performance.now();
-  Array.from(activeMorphs.entries()).forEach(([index, morph]) => {
+  Array.from(activeOuterMorphs.entries()).forEach(([index, morph]) => {
     if (now - morph.startTime > morph.duration) {
-      activeMorphs.delete(index);
-      hiddenWalls.delete(index);
+      activeOuterMorphs.delete(index);
+      hiddenOuterWalls.delete(index);
     }
   });
-  return activeMorphs;
+  return activeOuterMorphs;
+}
+
+export function getActiveInnerMorphs(): Map<number, MorphAnimation> {
+  const now = performance.now();
+  Array.from(activeInnerMorphs.entries()).forEach(([index, morph]) => {
+    if (now - morph.startTime > morph.duration) {
+      activeInnerMorphs.delete(index);
+      hiddenInnerWalls.delete(index);
+    }
+  });
+  return activeInnerMorphs;
 }
 
 export function isWallHidden(wallIndex: number): boolean {
-  return hiddenWalls.has(wallIndex);
+  return hiddenOuterWalls.has(wallIndex);
+}
+
+export function isInnerWallHidden(wallIndex: number): boolean {
+  return hiddenInnerWalls.has(wallIndex);
+}
+
+function drawMorphAnimation(
+  ctx: CanvasRenderingContext2D,
+  morph: MorphAnimation,
+  images: HTMLCanvasElement[],
+  fadeIn: number,
+  hold: number,
+  fadeOut: number,
+  vibrationBase: number
+): void {
+  const now = performance.now();
+  const elapsed = now - morph.startTime;
+  
+  const shapeCanvas = images[morph.imageIndex];
+  if (!shapeCanvas) return;
+  
+  let opacity = 0;
+  let vibrationMultiplier = 1;
+  
+  if (elapsed < fadeIn) {
+    opacity = elapsed / fadeIn;
+    vibrationMultiplier = 1;
+  } else if (elapsed < fadeIn + hold) {
+    opacity = 1;
+    vibrationMultiplier = 1;
+  } else {
+    const fadeOutElapsed = elapsed - fadeIn - hold;
+    opacity = 1 - (fadeOutElapsed / fadeOut);
+    vibrationMultiplier = 1 - (fadeOutElapsed / fadeOut);
+  }
+  
+  const midX = (morph.wallStart.x + morph.wallEnd.x) / 2;
+  const midY = (morph.wallStart.y + morph.wallEnd.y) / 2;
+  
+  const wallDx = morph.wallEnd.x - morph.wallStart.x;
+  const wallDy = morph.wallEnd.y - morph.wallStart.y;
+  const wallLength = Math.sqrt(wallDx * wallDx + wallDy * wallDy);
+  const wallAngle = Math.atan2(wallDy, wallDx);
+  
+  const targetHeight = wallLength * 0.5;
+  const aspectRatio = shapeCanvas.width / shapeCanvas.height;
+  const targetWidth = targetHeight * aspectRatio;
+  
+  const vibrationIntensity = vibrationMultiplier * vibrationBase;
+  const vibrationX = Math.sin(elapsed * 0.08) * vibrationIntensity;
+  const vibrationY = Math.cos(elapsed * 0.11) * vibrationIntensity;
+  
+  ctx.save();
+  ctx.translate(midX + vibrationX, midY + vibrationY);
+  ctx.rotate(wallAngle);
+  
+  ctx.globalAlpha = Math.max(0, Math.min(1, opacity));
+  
+  ctx.drawImage(
+    shapeCanvas,
+    -targetWidth / 2,
+    -targetHeight / 2,
+    targetWidth,
+    targetHeight
+  );
+  
+  ctx.restore();
 }
 
 export function drawMorphingShapes(ctx: CanvasRenderingContext2D): void {
-  const now = performance.now();
-  
   Array.from(getActiveMorphs().entries()).forEach(([_, morph]) => {
-    const elapsed = now - morph.startTime;
-    
-    const shapeCanvas = processedImages[morph.imageIndex];
-    if (!shapeCanvas) return;
-    
-    let opacity = 0;
-    let vibrationMultiplier = 1;
-    
-    if (elapsed < FADE_IN_DURATION) {
-      opacity = elapsed / FADE_IN_DURATION;
-      vibrationMultiplier = 1;
-    } else if (elapsed < FADE_IN_DURATION + HOLD_DURATION) {
-      opacity = 1;
-      vibrationMultiplier = 1;
-    } else {
-      const fadeOutElapsed = elapsed - FADE_IN_DURATION - HOLD_DURATION;
-      opacity = 1 - (fadeOutElapsed / FADE_OUT_DURATION);
-      vibrationMultiplier = 1 - (fadeOutElapsed / FADE_OUT_DURATION);
-    }
-    
-    const midX = (morph.wallStart.x + morph.wallEnd.x) / 2;
-    const midY = (morph.wallStart.y + morph.wallEnd.y) / 2;
-    
-    const wallDx = morph.wallEnd.x - morph.wallStart.x;
-    const wallDy = morph.wallEnd.y - morph.wallStart.y;
-    const wallLength = Math.sqrt(wallDx * wallDx + wallDy * wallDy);
-    const wallAngle = Math.atan2(wallDy, wallDx);
-    
-    const targetHeight = wallLength * 0.5;
-    const aspectRatio = shapeCanvas.width / shapeCanvas.height;
-    const targetWidth = targetHeight * aspectRatio;
-    
-    const vibrationIntensity = vibrationMultiplier * 6;
-    const vibrationX = Math.sin(elapsed * 0.08) * vibrationIntensity;
-    const vibrationY = Math.cos(elapsed * 0.11) * vibrationIntensity;
-    
-    ctx.save();
-    ctx.translate(midX + vibrationX, midY + vibrationY);
-    ctx.rotate(wallAngle);
-    
-    ctx.globalAlpha = Math.max(0, Math.min(1, opacity));
-    
-    ctx.drawImage(
-      shapeCanvas,
-      -targetWidth / 2,
-      -targetHeight / 2,
-      targetWidth,
-      targetHeight
-    );
-    
-    ctx.restore();
+    drawMorphAnimation(ctx, morph, outerProcessedImages, OUTER_FADE_IN, OUTER_HOLD, OUTER_FADE_OUT, OUTER_VIBRATION);
+  });
+  
+  Array.from(getActiveInnerMorphs().entries()).forEach(([_, morph]) => {
+    drawMorphAnimation(ctx, morph, innerProcessedImages, INNER_FADE_IN, INNER_HOLD, INNER_FADE_OUT, INNER_VIBRATION);
   });
 }
 
