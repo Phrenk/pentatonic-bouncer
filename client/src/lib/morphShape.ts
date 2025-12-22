@@ -272,7 +272,7 @@ function drawMorphAnimation(
   const vibrationX = Math.sin(elapsed * 0.08) * vibrationIntensity;
   const vibrationY = Math.cos(elapsed * 0.11) * vibrationIntensity;
   
-  // Rotate 180 degrees for wall index 3 (PG4 or PI4)
+  // Rotate 180 degrees for wall index 3 (PG4 or PI4) to fix upside-down images
   const extraRotation = morph.wallIndex === 3 ? Math.PI : 0;
   
   ctx.save();
