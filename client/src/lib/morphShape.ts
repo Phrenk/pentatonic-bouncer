@@ -294,8 +294,8 @@ function drawMorphAnimation(
   const vibrationX = Math.sin(elapsed * 0.08) * vibrationIntensity;
   const vibrationY = Math.cos(elapsed * 0.11) * vibrationIntensity;
   
-  // Rotate 180 degrees for wall index 3 (PG4 or PI4) to fix upside-down images
-  const extraRotation = morph.wallIndex === 3 ? Math.PI : 0;
+  // Rotate 180 degrees for wall index 2 (PG3/PI3) and 3 (PG4/PI4) to fix upside-down images
+  const extraRotation = (morph.wallIndex === 2 || morph.wallIndex === 3) ? Math.PI : 0;
   
   // Colorize the image with the assigned color
   const coloredCanvas = colorizeImage(shapeCanvas, morph.color);
