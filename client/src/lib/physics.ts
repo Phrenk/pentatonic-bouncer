@@ -188,7 +188,7 @@ export function initializeBall(centerX: number, centerY: number, speed: number):
     y: centerY,
     vx: Math.cos(angle) * speed,
     vy: Math.sin(angle) * speed,
-    radius: 8,
+    radius: 12,
   };
 }
 
