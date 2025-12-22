@@ -12,6 +12,7 @@ import {
   type Point 
 } from '@/lib/physics';
 import { playNote, getNoteLabel, playInnerNote, resumeAudioContext } from '@/lib/audio';
+import { loadAndProcessShape, startMorph, drawMorphingShapes, isShapeLoaded } from '@/lib/morphShape';
 
 interface PentagonCanvasProps {
   isPlaying: boolean;
@@ -78,6 +79,10 @@ export function PentagonCanvas({
     window.addEventListener('resize', updateDimensions);
     return () => window.removeEventListener('resize', updateDimensions);
   }, [updateDimensions]);
+
+  useEffect(() => {
+    loadAndProcessShape().catch(console.error);
+  }, []);
 
   useEffect(() => {
     if (dimensions.width === 0) return;
@@ -225,6 +230,8 @@ export function PentagonCanvas({
       ctx.stroke();
       ctx.shadowBlur = 0;
     }
+    
+    drawMorphingShapes(ctx);
   }, [dimensions]);
 
   const update = useCallback(() => {
@@ -258,6 +265,10 @@ export function PentagonCanvas({
           flashingWallsRef.current.set(wall.index, 1);
           
           playNote(wall.index, volume);
+          
+          if (isShapeLoaded()) {
+            startMorph(wall.index, wall.start, wall.end, 3000);
+          }
           
           bounceCountRef.current++;
           onBounceCountChange(bounceCountRef.current);
