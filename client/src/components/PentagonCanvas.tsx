@@ -123,7 +123,7 @@ export function PentagonCanvas({
     
     ctx.clearRect(0, 0, width, height);
     
-    ctx.fillStyle = LIGHT_BLUE;
+    ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, width, height);
     
     const centerX = width / 2;
