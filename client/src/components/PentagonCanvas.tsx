@@ -23,6 +23,7 @@ interface PentagonCanvasProps {
 }
 
 const BALL_BLUE = 'hsl(225, 85%, 42%)';
+const LIGHT_BLUE = 'hsl(225, 85%, 71%)';
 
 const WALL_COLORS = [
   '#FFFFFF',
@@ -122,13 +123,11 @@ export function PentagonCanvas({
     
     ctx.clearRect(0, 0, width, height);
     
+    ctx.fillStyle = LIGHT_BLUE;
+    ctx.fillRect(0, 0, width, height);
+    
     const centerX = width / 2;
     const centerY = height / 2;
-    const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, width * 0.5);
-    gradient.addColorStop(0, 'hsla(262, 83%, 58%, 0.08)');
-    gradient.addColorStop(1, 'transparent');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, width, height);
     
     const vertices = verticesRef.current;
     const walls = wallsRef.current;
