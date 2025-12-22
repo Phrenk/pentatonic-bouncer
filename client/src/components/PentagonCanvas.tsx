@@ -228,20 +228,20 @@ export function PentagonCanvas({
         ball.y, 
         ball.radius
       );
-      ballGradient.addColorStop(0, '#FFFFFF');
-      ballGradient.addColorStop(0.7, '#F0F0F0');
-      ballGradient.addColorStop(1, '#E0E0E0');
+      ballGradient.addColorStop(0, '#FFE55C');
+      ballGradient.addColorStop(0.7, '#FFD700');
+      ballGradient.addColorStop(1, '#DAA520');
       
       ctx.beginPath();
       ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
       ctx.fillStyle = ballGradient;
       ctx.fill();
       
-      ctx.shadowColor = 'rgba(255, 255, 255, 0.6)';
+      ctx.shadowColor = 'rgba(255, 215, 0, 0.6)';
       ctx.shadowBlur = 12;
       ctx.beginPath();
       ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.strokeStyle = 'rgba(255, 215, 0, 0.5)';
       ctx.lineWidth = 2;
       ctx.stroke();
       ctx.shadowBlur = 0;
