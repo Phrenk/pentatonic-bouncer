@@ -152,7 +152,7 @@ const INNER_FADE_OUT = 1000;
 const INNER_TOTAL = INNER_FADE_IN + INNER_HOLD + INNER_FADE_OUT;
 const INNER_VIBRATION = 4.5;
 
-const IMAGE_COLORS = ['#FF0000', '#0000FF', '#FFFF00', '#000000', '#800080'];
+const IMAGE_COLORS = ['#FF0000', '#0000FF', '#FFA500', '#000000', '#800080'];
 
 export function startMorph(
   wallIndex: number, 
