@@ -361,7 +361,7 @@ export function drawMorphingShapes(ctx: CanvasRenderingContext2D): void {
   });
   
   Array.from(getActiveInnerMorphs().entries()).forEach(([_, morph]) => {
-    drawMorphAnimation(ctx, morph, innerProcessedImages, INNER_FADE_IN, INNER_HOLD, INNER_FADE_OUT, INNER_VIBRATION, 1.3);
+    drawMorphAnimation(ctx, morph, innerProcessedImages, INNER_FADE_IN, INNER_HOLD, INNER_FADE_OUT, INNER_VIBRATION, 1.69);
   });
 }
 
