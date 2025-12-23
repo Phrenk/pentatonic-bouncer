@@ -138,10 +138,18 @@ export interface MorphAnimation {
 
 let pentagonCenter: { x: number; y: number } = { x: 0, y: 0 };
 let pentagonRadius: number = 0;
+let innerReferenceWalls: Map<number, { start: { x: number; y: number }; end: { x: number; y: number } }> = new Map();
 
 export function setPentagonCenter(x: number, y: number, radius: number): void {
   pentagonCenter = { x, y };
   pentagonRadius = radius;
+}
+
+export function setInnerReferenceWalls(walls: { index: number; start: { x: number; y: number }; end: { x: number; y: number } }[]): void {
+  innerReferenceWalls.clear();
+  walls.forEach(wall => {
+    innerReferenceWalls.set(wall.index, { start: wall.start, end: wall.end });
+  });
 }
 
 const activeOuterMorphs: Map<number, MorphAnimation> = new Map();
@@ -195,20 +203,31 @@ export function startInnerMorph(
   
   const color = IMAGE_COLORS[Math.floor(Math.random() * IMAGE_COLORS.length)];
   
-  let targetPosition: { x: number; y: number };
-  if (wallIndex === 0 || wallIndex === 4) {
-    targetPosition = { x: pentagonCenter.x, y: pentagonCenter.y - pentagonRadius * 0.2 };
+  let refWallIndex: number;
+  if (wallIndex === 0) {
+    refWallIndex = 0;
+  } else if (wallIndex === 1 || wallIndex === 2) {
+    refWallIndex = 2;
   } else {
-    targetPosition = { x: pentagonCenter.x, y: pentagonCenter.y + pentagonRadius * 0.2 };
+    refWallIndex = 4;
   }
   
+  const refWall = innerReferenceWalls.get(refWallIndex);
+  const useWallStart = refWall ? refWall.start : wallStart;
+  const useWallEnd = refWall ? refWall.end : wallEnd;
+  
+  const targetPosition = {
+    x: (useWallStart.x + useWallEnd.x) / 2,
+    y: (useWallStart.y + useWallEnd.y) / 2,
+  };
+  
   activeInnerMorphs.set(wallIndex, {
-    wallIndex,
+    wallIndex: refWallIndex,
     imageIndex,
     startTime: performance.now(),
     duration: INNER_TOTAL,
-    wallStart,
-    wallEnd,
+    wallStart: useWallStart,
+    wallEnd: useWallEnd,
     isInner: true,
     color,
     targetPosition,
@@ -313,8 +332,8 @@ function drawMorphAnimation(
   const vibrationX = Math.sin(elapsed * 0.08) * vibrationIntensity;
   const vibrationY = Math.cos(elapsed * 0.11) * vibrationIntensity;
   
-  // Rotate 180 degrees for wall index 2 (PG3/PI3) and 3 (PG4/PI4) to fix upside-down images
-  const extraRotation = (morph.wallIndex === 2 || morph.wallIndex === 3) ? Math.PI : 0;
+  // Rotate 180 degrees for wall index 1 (PG2), 2 (PG3/PI3) and 3 (PG4/PI4) to fix upside-down images
+  const extraRotation = (morph.wallIndex === 1 || morph.wallIndex === 2 || morph.wallIndex === 3) ? Math.PI : 0;
   
   // Colorize the image with the assigned color
   const coloredCanvas = colorizeImage(shapeCanvas, morph.color);

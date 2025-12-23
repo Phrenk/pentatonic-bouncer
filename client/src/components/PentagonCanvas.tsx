@@ -12,7 +12,7 @@ import {
   type Point 
 } from '@/lib/physics';
 import { playNote, getNoteLabel, playInnerNote, resumeAudioContext } from '@/lib/audio';
-import { loadAndProcessShape, startMorph, startInnerMorph, drawMorphingShapes, isShapeLoaded, isWallHidden, isInnerWallHidden, setPentagonCenter } from '@/lib/morphShape';
+import { loadAndProcessShape, startMorph, startInnerMorph, drawMorphingShapes, isShapeLoaded, isWallHidden, isInnerWallHidden, setPentagonCenter, setInnerReferenceWalls } from '@/lib/morphShape';
 
 interface PentagonCanvasProps {
   isPlaying: boolean;
@@ -103,6 +103,13 @@ export function PentagonCanvas({
     innerWallsRef.current = generateGappedPentagonWalls(centerX, centerY, originalInnerRadius * 0.7, enlargedInnerRadius);
     
     setPentagonCenter(centerX, centerY, pentagonRadius);
+    
+    const refWalls = [0, 2, 4].map(idx => ({
+      index: idx,
+      start: innerWallsRef.current[idx]?.start || { x: 0, y: 0 },
+      end: innerWallsRef.current[idx]?.end || { x: 0, y: 0 },
+    }));
+    setInnerReferenceWalls(refWalls);
     
     if (!ballRef.current) {
       ballRef.current = initializeBall(centerX, centerY, speed);
