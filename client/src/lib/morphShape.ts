@@ -158,14 +158,14 @@ const hiddenOuterWalls: Set<number> = new Set();
 const hiddenInnerWalls: Set<number> = new Set();
 
 const OUTER_FADE_IN = 2000;
-const OUTER_HOLD = 2000;
-const OUTER_FADE_OUT = 2000;
+const OUTER_HOLD = 4000;
+const OUTER_FADE_OUT = 4000;
 const OUTER_TOTAL = OUTER_FADE_IN + OUTER_HOLD + OUTER_FADE_OUT;
 const OUTER_VIBRATION = 6;
 
 const INNER_FADE_IN = 1000;
-const INNER_HOLD = 2000;
-const INNER_FADE_OUT = 1000;
+const INNER_HOLD = 4000;
+const INNER_FADE_OUT = 3000;
 const INNER_TOTAL = INNER_FADE_IN + INNER_HOLD + INNER_FADE_OUT;
 const INNER_VIBRATION = 4.5;
 
