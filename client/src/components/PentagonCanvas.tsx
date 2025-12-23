@@ -12,7 +12,7 @@ import {
   type Point 
 } from '@/lib/physics';
 import { playNote, getNoteLabel, playInnerNote, resumeAudioContext } from '@/lib/audio';
-import { loadAndProcessShape, startMorph, startInnerMorph, drawMorphingShapes, isShapeLoaded, isWallHidden, isInnerWallHidden } from '@/lib/morphShape';
+import { loadAndProcessShape, startMorph, startInnerMorph, drawMorphingShapes, isShapeLoaded, isWallHidden, isInnerWallHidden, setPentagonCenter } from '@/lib/morphShape';
 
 interface PentagonCanvasProps {
   isPlaying: boolean;
@@ -101,6 +101,8 @@ export function PentagonCanvas({
     
     innerVerticesRef.current = generatePentagonVertices(centerX, centerY, enlargedInnerRadius);
     innerWallsRef.current = generateGappedPentagonWalls(centerX, centerY, originalInnerRadius * 0.7, enlargedInnerRadius);
+    
+    setPentagonCenter(centerX, centerY, pentagonRadius);
     
     if (!ballRef.current) {
       ballRef.current = initializeBall(centerX, centerY, speed);

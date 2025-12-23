@@ -133,6 +133,15 @@ export interface MorphAnimation {
   wallEnd: { x: number; y: number };
   isInner: boolean;
   color: string;
+  targetPosition: { x: number; y: number };
+}
+
+let pentagonCenter: { x: number; y: number } = { x: 0, y: 0 };
+let pentagonRadius: number = 0;
+
+export function setPentagonCenter(x: number, y: number, radius: number): void {
+  pentagonCenter = { x, y };
+  pentagonRadius = radius;
 }
 
 const activeOuterMorphs: Map<number, MorphAnimation> = new Map();
@@ -171,6 +180,7 @@ export function startMorph(
     wallEnd,
     isInner: false,
     color,
+    targetPosition: { x: pentagonCenter.x, y: pentagonCenter.y },
   });
   
   hiddenOuterWalls.add(wallIndex);
@@ -185,6 +195,13 @@ export function startInnerMorph(
   
   const color = IMAGE_COLORS[Math.floor(Math.random() * IMAGE_COLORS.length)];
   
+  let targetPosition: { x: number; y: number };
+  if (wallIndex === 0 || wallIndex === 4) {
+    targetPosition = { x: pentagonCenter.x, y: pentagonCenter.y - pentagonRadius * 0.2 };
+  } else {
+    targetPosition = { x: pentagonCenter.x, y: pentagonCenter.y + pentagonRadius * 0.2 };
+  }
+  
   activeInnerMorphs.set(wallIndex, {
     wallIndex,
     imageIndex,
@@ -194,6 +211,7 @@ export function startInnerMorph(
     wallEnd,
     isInner: true,
     color,
+    targetPosition,
   });
   
   hiddenInnerWalls.add(wallIndex);
@@ -279,8 +297,8 @@ function drawMorphAnimation(
     vibrationMultiplier = 1 - (fadeOutElapsed / fadeOut);
   }
   
-  const midX = (morph.wallStart.x + morph.wallEnd.x) / 2;
-  const midY = (morph.wallStart.y + morph.wallEnd.y) / 2;
+  const midX = morph.targetPosition.x;
+  const midY = morph.targetPosition.y;
   
   const wallDx = morph.wallEnd.x - morph.wallStart.x;
   const wallDy = morph.wallEnd.y - morph.wallStart.y;
