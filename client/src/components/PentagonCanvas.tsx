@@ -256,7 +256,7 @@ export function PentagonCanvas({
       ctx.shadowBlur = 0;
     }
     
-    drawMorphingShapes(ctx);
+    drawMorphingShapes(ctx, dimensions.width, dimensions.height);
   }, [dimensions]);
 
   const update = useCallback(() => {

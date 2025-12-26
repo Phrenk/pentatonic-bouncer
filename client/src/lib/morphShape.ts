@@ -289,7 +289,7 @@ function drawMorphAnimation(
   hold: number,
   fadeOut: number,
   vibrationBase: number,
-  sizeMultiplier: number = 1.0
+  fixedHeight: number
 ): void {
   const now = performance.now();
   const elapsed = now - morph.startTime;
@@ -315,11 +315,7 @@ function drawMorphAnimation(
   const midX = morph.targetPosition.x;
   const midY = morph.targetPosition.y;
   
-  const wallDx = morph.wallEnd.x - morph.wallStart.x;
-  const wallDy = morph.wallEnd.y - morph.wallStart.y;
-  const wallLength = Math.sqrt(wallDx * wallDx + wallDy * wallDy);
-  
-  const targetHeight = wallLength * 0.5 * sizeMultiplier;
+  const targetHeight = fixedHeight;
   const aspectRatio = shapeCanvas.width / shapeCanvas.height;
   const targetWidth = targetHeight * aspectRatio;
   
@@ -345,13 +341,18 @@ function drawMorphAnimation(
   ctx.restore();
 }
 
-export function drawMorphingShapes(ctx: CanvasRenderingContext2D): void {
+export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): void {
+  const minDim = Math.min(canvasWidth, canvasHeight);
+  const pentagonRadius = minDim * 0.4;
+  const innerPentagonRadius = pentagonRadius * 0.35;
+  const fixedHeight = innerPentagonRadius * 1.4;
+  
   Array.from(getActiveMorphs().entries()).forEach(([_, morph]) => {
-    drawMorphAnimation(ctx, morph, wordImages, OUTER_FADE_IN, OUTER_HOLD, OUTER_FADE_OUT, OUTER_VIBRATION, 1.69);
+    drawMorphAnimation(ctx, morph, wordImages, OUTER_FADE_IN, OUTER_HOLD, OUTER_FADE_OUT, OUTER_VIBRATION, fixedHeight);
   });
   
   Array.from(getActiveInnerMorphs().entries()).forEach(([_, morph]) => {
-    drawMorphAnimation(ctx, morph, wordImages, INNER_FADE_IN, INNER_HOLD, INNER_FADE_OUT, INNER_VIBRATION, 1.69);
+    drawMorphAnimation(ctx, morph, wordImages, INNER_FADE_IN, INNER_HOLD, INNER_FADE_OUT, INNER_VIBRATION, fixedHeight);
   });
 }
 
