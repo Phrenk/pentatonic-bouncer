@@ -232,35 +232,6 @@ export function PentagonCanvas({
     
     ctx.shadowBlur = 0;
     
-    const ball = ballRef.current;
-    if (ball) {
-      const ballGradient = ctx.createRadialGradient(
-        ball.x - ball.radius * 0.3, 
-        ball.y - ball.radius * 0.3, 
-        0, 
-        ball.x, 
-        ball.y, 
-        ball.radius
-      );
-      ballGradient.addColorStop(0, 'hsl(225, 85%, 58%)');
-      ballGradient.addColorStop(0.7, 'hsl(225, 85%, 50%)');
-      ballGradient.addColorStop(1, 'hsl(225, 85%, 45%)');
-      
-      ctx.beginPath();
-      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-      ctx.fillStyle = ballGradient;
-      ctx.fill();
-      
-      ctx.shadowColor = 'hsla(225, 85%, 50%, 0.6)';
-      ctx.shadowBlur = 12;
-      ctx.beginPath();
-      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-      ctx.strokeStyle = 'hsla(225, 85%, 55%, 0.5)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.shadowBlur = 0;
-    }
-    
     drawMorphingShapes(ctx, dimensions.width, dimensions.height);
   }, [dimensions]);
 
