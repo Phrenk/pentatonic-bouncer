@@ -164,7 +164,7 @@ const FADE_OUT = 4000;
 const TOTAL_DURATION = FADE_IN + VIBRATE + HOLD_NO_VIBRATE + FADE_OUT;
 const VIBRATION_INTENSITY = 5;
 
-const IMAGE_COLORS = ['#FF0000', '#50C878', '#FFA500', '#FFD700', '#800080'];
+const IMAGE_COLORS = ['#FFFFFF'];
 
 export function startMorph(
   wallIndex: number, 
