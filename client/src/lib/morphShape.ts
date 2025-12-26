@@ -345,7 +345,7 @@ export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: n
   const minDim = Math.min(canvasWidth, canvasHeight);
   const pentagonRadius = minDim * 0.4;
   const innerPentagonRadius = pentagonRadius * 0.35;
-  const fixedHeight = innerPentagonRadius * 1.4;
+  const fixedHeight = innerPentagonRadius * 0.7;
   
   Array.from(getActiveMorphs().entries()).forEach(([_, morph]) => {
     drawMorphAnimation(ctx, morph, wordImages, OUTER_FADE_IN, OUTER_HOLD, OUTER_FADE_OUT, OUTER_VIBRATION, fixedHeight);
