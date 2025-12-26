@@ -374,6 +374,11 @@ export function PentagonCanvas({
         
         if (crossed && !innerCrossed2Ref.current.has(innerWall.index)) {
           innerCrossed2Ref.current.add(innerWall.index);
+          flashingInnerWallsRef.current.set(innerWall.index, 1);
+          
+          if (isShapeLoaded()) {
+            startInnerMorph(innerWall.index, innerWall.start, innerWall.end);
+          }
         } else if (!crossed && innerCrossed2Ref.current.has(innerWall.index)) {
           innerCrossed2Ref.current.delete(innerWall.index);
         }
