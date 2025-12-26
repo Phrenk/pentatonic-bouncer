@@ -53,16 +53,21 @@ export function PentagonCanvas({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
   const ballRef = useRef<Ball | null>(null);
+  const ball2Ref = useRef<Ball | null>(null);
   const verticesRef = useRef<Point[]>([]);
   const wallsRef = useRef<Wall[]>([]);
   const innerWallsRef = useRef<Wall[]>([]);
   const innerWallsVisualRef = useRef<Wall[]>([]);
   const lastCollisionRef = useRef<number>(-1);
+  const lastCollision2Ref = useRef<number>(-1);
   const collisionCooldownRef = useRef<number>(0);
+  const collisionCooldown2Ref = useRef<number>(0);
   const flashingWallsRef = useRef<Map<number, number>>(new Map());
   const flashingInnerWallsRef = useRef<Map<number, number>>(new Map());
   const innerCrossedRef = useRef<Set<number>>(new Set());
+  const innerCrossed2Ref = useRef<Set<number>>(new Set());
   const prevBallPosRef = useRef<Point | null>(null);
+  const prevBall2PosRef = useRef<Point | null>(null);
   const bounceCountRef = useRef<number>(0);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
@@ -121,6 +126,9 @@ export function PentagonCanvas({
     if (!ballRef.current) {
       ballRef.current = initializeBall(centerX, centerY, speed);
     }
+    if (!ball2Ref.current) {
+      ball2Ref.current = initializeBall(centerX, centerY, speed);
+    }
   }, [dimensions, speed]);
 
   useEffect(() => {
@@ -130,6 +138,14 @@ export function PentagonCanvas({
         const ratio = speed / currentSpeed;
         ballRef.current.vx *= ratio;
         ballRef.current.vy *= ratio;
+      }
+    }
+    if (ball2Ref.current) {
+      const currentSpeed = Math.sqrt(ball2Ref.current.vx ** 2 + ball2Ref.current.vy ** 2);
+      if (currentSpeed > 0) {
+        const ratio = speed / currentSpeed;
+        ball2Ref.current.vx *= ratio;
+        ball2Ref.current.vy *= ratio;
       }
     }
   }, [speed]);
@@ -309,6 +325,47 @@ export function PentagonCanvas({
     
     prevBallPosRef.current = currentPos;
     
+    const ball2 = ball2Ref.current;
+    if (ball2) {
+      const prevPos2 = prevBall2PosRef.current || { x: ball2.x, y: ball2.y };
+      
+      ball2.x += ball2.vx;
+      ball2.y += ball2.vy;
+      
+      const currentPos2 = { x: ball2.x, y: ball2.y };
+      
+      if (collisionCooldown2Ref.current > 0) {
+        collisionCooldown2Ref.current--;
+      }
+      
+      for (const wall of walls) {
+        if (checkCollision(ball2, wall) && collisionCooldown2Ref.current === 0) {
+          if (lastCollision2Ref.current !== wall.index) {
+            const newVelocity = reflectVelocity(ball2, wall);
+            ball2.vx = newVelocity.vx;
+            ball2.vy = newVelocity.vy;
+            
+            lastCollision2Ref.current = wall.index;
+            collisionCooldown2Ref.current = 5;
+            
+            break;
+          }
+        }
+      }
+      
+      for (const innerWall of innerWalls) {
+        const crossed = checkLineCrossing(prevPos2, currentPos2, innerWall.start, innerWall.end);
+        
+        if (crossed && !innerCrossed2Ref.current.has(innerWall.index)) {
+          innerCrossed2Ref.current.add(innerWall.index);
+        } else if (!crossed && innerCrossed2Ref.current.has(innerWall.index)) {
+          innerCrossed2Ref.current.delete(innerWall.index);
+        }
+      }
+      
+      prevBall2PosRef.current = currentPos2;
+    }
+    
     flashingWallsRef.current.forEach((intensity, index) => {
       const newIntensity = intensity - 0.05;
       if (newIntensity <= 0) {
@@ -357,16 +414,22 @@ export function PentagonCanvas({
   }, []);
 
   const resetBall = useCallback(() => {
-    const centerX = dimensions.width / 2;
+    const pentagonAreaWidth = dimensions.width - LEFT_PANEL_WIDTH;
+    const centerX = LEFT_PANEL_WIDTH + pentagonAreaWidth / 2;
     const centerY = dimensions.height / 2;
     ballRef.current = initializeBall(centerX, centerY, speed);
+    ball2Ref.current = initializeBall(centerX, centerY, speed);
     bounceCountRef.current = 0;
     onBounceCountChange(0);
     lastCollisionRef.current = -1;
+    lastCollision2Ref.current = -1;
+    collisionCooldown2Ref.current = 0;
     flashingWallsRef.current.clear();
     flashingInnerWallsRef.current.clear();
     innerCrossedRef.current.clear();
+    innerCrossed2Ref.current.clear();
     prevBallPosRef.current = null;
+    prevBall2PosRef.current = null;
   }, [dimensions, speed, onBounceCountChange]);
 
   useEffect(() => {
