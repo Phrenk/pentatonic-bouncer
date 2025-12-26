@@ -103,9 +103,9 @@ export function PentagonCanvas({
     verticesRef.current = generatePentagonVertices(centerX, centerY, pentagonRadius);
     wallsRef.current = getWalls(verticesRef.current);
     
-    const outerWallLength = 2 * pentagonRadius * Math.sin(Math.PI / 5);
+    const visualLength = pentagonRadius * 0.85;
     const collisionLength = pentagonRadius * 0.25;
-    const { collision, visual } = generateRadialInnerWalls(centerX, centerY, verticesRef.current, collisionLength, outerWallLength);
+    const { collision, visual } = generateRadialInnerWalls(centerX, centerY, verticesRef.current, collisionLength, visualLength);
     innerWallsRef.current = collision;
     innerWallsVisualRef.current = visual;
     
@@ -185,17 +185,6 @@ export function PentagonCanvas({
     });
     
     ctx.shadowBlur = 0;
-    
-    vertices.forEach((vertex, index) => {
-      const flashIntensity = flashingWallsRef.current.get(index) || 0;
-      const nextFlashIntensity = flashingWallsRef.current.get((index + 4) % 5) || 0;
-      const combinedIntensity = Math.max(flashIntensity, nextFlashIntensity);
-      
-      ctx.beginPath();
-      ctx.arc(vertex.x, vertex.y, 4 + combinedIntensity * 2, 0, Math.PI * 2);
-      ctx.fillStyle = 'hsl(var(--foreground))';
-      ctx.fill();
-    });
     
     const innerWallsVisual = innerWallsVisualRef.current;
     
