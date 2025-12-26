@@ -347,7 +347,7 @@ function drawMorphAnimation(
 
 export function drawMorphingShapes(ctx: CanvasRenderingContext2D): void {
   Array.from(getActiveMorphs().entries()).forEach(([_, morph]) => {
-    drawMorphAnimation(ctx, morph, wordImages, OUTER_FADE_IN, OUTER_HOLD, OUTER_FADE_OUT, OUTER_VIBRATION, 1.0);
+    drawMorphAnimation(ctx, morph, wordImages, OUTER_FADE_IN, OUTER_HOLD, OUTER_FADE_OUT, OUTER_VIBRATION, 1.69);
   });
   
   Array.from(getActiveInnerMorphs().entries()).forEach(([_, morph]) => {
