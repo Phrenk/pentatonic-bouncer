@@ -183,11 +183,11 @@ export function PentagonCanvas({
     walls.forEach((wall, index) => {
       if (isWallHidden(index)) return;
       
+      const flashIntensity = flashingWallsRef.current.get(index) || 0;
+      
       const blinkOffset = index * 137;
       const blinkOn = Math.floor((now + blinkOffset) / 150) % 2 === 0;
-      if (!blinkOn) return;
-      
-      const flashIntensity = flashingWallsRef.current.get(index) || 0;
+      if (!blinkOn && flashIntensity === 0) return;
       
       const vibX = Math.sin(now * 0.08 + index) * WALL_VIBRATION;
       const vibY = Math.cos(now * 0.11 + index) * WALL_VIBRATION;
@@ -229,11 +229,11 @@ export function PentagonCanvas({
     innerWallsVisual.forEach((wall, index) => {
       if (isInnerWallHidden(index)) return;
       
+      const flashIntensity = flashingInnerWallsRef.current.get(index) || 0;
+      
       const blinkOffset = (index + 5) * 173;
       const blinkOn = Math.floor((now + blinkOffset) / 150) % 2 === 0;
-      if (!blinkOn) return;
-      
-      const flashIntensity = flashingInnerWallsRef.current.get(index) || 0;
+      if (!blinkOn && flashIntensity === 0) return;
       
       const vibX = Math.sin(now * 0.08 + index + 5) * WALL_VIBRATION;
       const vibY = Math.cos(now * 0.11 + index + 5) * WALL_VIBRATION;
