@@ -364,6 +364,8 @@ export function PentagonCanvas({
             lastCollision2Ref.current = wall.index;
             collisionCooldown2Ref.current = 5;
             
+            flashingWallsRef.current.set(wall.index, 1);
+            
             break;
           }
         }
