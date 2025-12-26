@@ -271,7 +271,7 @@ export function PentagonCanvas({
     if (ball2) {
       ctx.beginPath();
       ctx.arc(ball2.x, ball2.y, ball2.radius, 0, Math.PI * 2);
-      ctx.fillStyle = '#FFFFFF';
+      ctx.fillStyle = '#000000';
       ctx.fill();
     }
     
