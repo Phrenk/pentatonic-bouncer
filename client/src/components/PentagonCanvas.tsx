@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { 
   generatePentagonVertices, 
-  generateGappedPentagonWalls,
+  generateRadialInnerWalls,
   getWalls, 
   checkCollision, 
   reflectVelocity, 
@@ -34,11 +34,11 @@ const WALL_COLORS = [
 ];
 
 const INNER_WALL_COLORS = [
-  BALL_BLUE,
-  BALL_BLUE,
-  BALL_BLUE,
-  BALL_BLUE,
-  BALL_BLUE,
+  '#FFFFFF',
+  '#FFFFFF',
+  '#FFFFFF',
+  '#FFFFFF',
+  '#FFFFFF',
 ];
 
 const LEFT_PANEL_WIDTH = 220;
@@ -103,8 +103,8 @@ export function PentagonCanvas({
     verticesRef.current = generatePentagonVertices(centerX, centerY, pentagonRadius);
     wallsRef.current = getWalls(verticesRef.current);
     
-    innerVerticesRef.current = generatePentagonVertices(centerX, centerY, enlargedInnerRadius);
-    innerWallsRef.current = generateGappedPentagonWalls(centerX, centerY, originalInnerRadius * 0.7, enlargedInnerRadius);
+    const innerWallLength = pentagonRadius * 0.25;
+    innerWallsRef.current = generateRadialInnerWalls(centerX, centerY, verticesRef.current, innerWallLength);
     
     setPentagonCenter(centerX, centerY, pentagonRadius);
     

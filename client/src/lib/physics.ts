@@ -29,49 +29,35 @@ export function generatePentagonVertices(centerX: number, centerY: number, radiu
   return vertices;
 }
 
-export function generateGappedPentagonWalls(
+export function generateRadialInnerWalls(
   centerX: number, 
   centerY: number, 
-  originalRadius: number, 
-  enlargedRadius: number,
-  rotation: number = -Math.PI / 2
+  outerVertices: Point[],
+  wallLength: number
 ): Wall[] {
-  const originalSideLength = 2 * originalRadius * Math.sin(Math.PI / 5);
-  
   const walls: Wall[] = [];
   
   for (let i = 0; i < 5; i++) {
-    const angle1 = rotation + (i * 2 * Math.PI) / 5;
-    const angle2 = rotation + ((i + 1) * 2 * Math.PI) / 5;
+    const vertexIndex = (i + 1) % 5;
+    const vertex = outerVertices[vertexIndex];
     
-    const v1 = {
-      x: centerX + enlargedRadius * Math.cos(angle1),
-      y: centerY + enlargedRadius * Math.sin(angle1),
-    };
-    const v2 = {
-      x: centerX + enlargedRadius * Math.cos(angle2),
-      y: centerY + enlargedRadius * Math.sin(angle2),
-    };
+    const dx = centerX - vertex.x;
+    const dy = centerY - vertex.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const unitX = dx / dist;
+    const unitY = dy / dist;
     
-    const midX = (v1.x + v2.x) / 2;
-    const midY = (v1.y + v2.y) / 2;
-    
-    const edgeDx = v2.x - v1.x;
-    const edgeDy = v2.y - v1.y;
-    const edgeLength = Math.sqrt(edgeDx * edgeDx + edgeDy * edgeDy);
-    const edgeUnitX = edgeDx / edgeLength;
-    const edgeUnitY = edgeDy / edgeLength;
-    
-    const halfSide = originalSideLength / 2;
+    const midDist = dist / 2;
+    const halfLength = wallLength / 2;
     
     walls.push({
       start: {
-        x: midX - edgeUnitX * halfSide,
-        y: midY - edgeUnitY * halfSide,
+        x: vertex.x + unitX * (midDist - halfLength),
+        y: vertex.y + unitY * (midDist - halfLength),
       },
       end: {
-        x: midX + edgeUnitX * halfSide,
-        y: midY + edgeUnitY * halfSide,
+        x: vertex.x + unitX * (midDist + halfLength),
+        y: vertex.y + unitY * (midDist + halfLength),
       },
       index: i,
     });
