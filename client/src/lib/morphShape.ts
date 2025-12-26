@@ -129,6 +129,7 @@ function getNextWord(): number {
 export interface WordAnimation {
   id: number;
   imageIndex: number;
+  word: string;
   startTime: number;
   duration: number;
   color: string;
@@ -176,6 +177,7 @@ export function startMorph(
   activeWords.push({
     id: animationIdCounter++,
     imageIndex,
+    word: WORDS[imageIndex],
     startTime: performance.now(),
     duration: TOTAL_DURATION,
     color,
@@ -199,6 +201,7 @@ export function startInnerMorph(
   activeWords.push({
     id: animationIdCounter++,
     imageIndex,
+    word: WORDS[imageIndex],
     startTime: performance.now(),
     duration: TOTAL_DURATION,
     color,
@@ -251,25 +254,26 @@ function cleanupExpiredWords(): void {
 export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): void {
   cleanupExpiredWords();
   
-  const leftPanelWidth = 200;
-  const leftMargin = 10;
+  const leftMargin = 2;
   const topMargin = 30;
   const lineHeight = 56;
-  const wordHeight = 44;
+  const fontSize = 44;
   
   const now = performance.now();
   
-  activeWords.forEach((word, index) => {
-    const shapeCanvas = wordImages[word.imageIndex];
-    if (!shapeCanvas) return;
+  activeWords.forEach((wordAnim, index) => {
+    const elapsed = now - wordAnim.startTime;
+    const wordText = wordAnim.word;
+    const totalLetters = wordText.length;
     
-    const elapsed = now - word.startTime;
-    
-    let opacity = 0;
+    let opacity = 1;
     let shouldVibrate = false;
+    let visibleLetters = totalLetters;
     
     if (elapsed < FADE_IN) {
-      opacity = elapsed / FADE_IN;
+      const progress = elapsed / FADE_IN;
+      visibleLetters = Math.ceil(progress * totalLetters);
+      opacity = 1;
       shouldVibrate = false;
     } else if (elapsed < FADE_IN + VIBRATE) {
       opacity = 1;
@@ -293,22 +297,16 @@ export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: n
       vibrationY = Math.cos(elapsed * 0.11) * VIBRATION_INTENSITY;
     }
     
-    const aspectRatio = shapeCanvas.width / shapeCanvas.height;
-    const targetHeight = wordHeight;
-    const targetWidth = targetHeight * aspectRatio;
-    
-    const coloredCanvas = colorizeImage(shapeCanvas, word.color);
+    const displayText = wordText.substring(0, visibleLetters);
     
     ctx.save();
     ctx.globalAlpha = Math.max(0, Math.min(1, opacity));
+    ctx.font = `${fontSize}px ${DOS_FONT}`;
+    ctx.textBaseline = 'top';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = wordAnim.color;
     
-    ctx.drawImage(
-      coloredCanvas,
-      x + vibrationX,
-      y + vibrationY,
-      targetWidth,
-      targetHeight
-    );
+    ctx.fillText(displayText, x + vibrationX, y + vibrationY);
     
     ctx.restore();
   });
