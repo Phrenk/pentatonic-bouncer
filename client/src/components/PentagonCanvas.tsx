@@ -12,7 +12,7 @@ import {
   type Point 
 } from '@/lib/physics';
 import { playNote, getNoteLabel, playInnerNote, resumeAudioContext } from '@/lib/audio';
-import { loadAndProcessShape, startMorph, startInnerMorph, drawMorphingShapes, isShapeLoaded, isWallHidden, isInnerWallHidden, setPentagonCenter, setInnerReferenceWalls } from '@/lib/morphShape';
+import { loadAndProcessShape, startMorph, startInnerMorph, drawMorphingShapes, isShapeLoaded, isWallHidden, isInnerWallHidden, hideOuterWall, hideInnerWall, setPentagonCenter, setInnerReferenceWalls } from '@/lib/morphShape';
 
 interface PentagonCanvasProps {
   isPlaying: boolean;
@@ -365,6 +365,7 @@ export function PentagonCanvas({
             collisionCooldown2Ref.current = 5;
             
             flashingWallsRef.current.set(wall.index, 1);
+            hideOuterWall(wall.index);
             
             break;
           }
@@ -377,6 +378,7 @@ export function PentagonCanvas({
         if (crossed && !innerCrossed2Ref.current.has(innerWall.index)) {
           innerCrossed2Ref.current.add(innerWall.index);
           flashingInnerWallsRef.current.set(innerWall.index, 1);
+          hideInnerWall(innerWall.index);
         } else if (!crossed && innerCrossed2Ref.current.has(innerWall.index)) {
           innerCrossed2Ref.current.delete(innerWall.index);
         }

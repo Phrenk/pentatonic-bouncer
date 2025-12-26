@@ -250,6 +250,22 @@ export function isInnerWallHidden(wallIndex: number): boolean {
   return hiddenInnerWalls.has(wallIndex);
 }
 
+export function hideOuterWall(wallIndex: number): void {
+  hiddenOuterWalls.add(wallIndex);
+  
+  setTimeout(() => {
+    hiddenOuterWalls.delete(wallIndex);
+  }, TOTAL_DURATION);
+}
+
+export function hideInnerWall(wallIndex: number): void {
+  hiddenInnerWalls.add(wallIndex);
+  
+  setTimeout(() => {
+    hiddenInnerWalls.delete(wallIndex);
+  }, TOTAL_DURATION);
+}
+
 function colorizeImage(sourceCanvas: HTMLCanvasElement, color: string): HTMLCanvasElement {
   const coloredCanvas = document.createElement('canvas');
   coloredCanvas.width = sourceCanvas.width;
