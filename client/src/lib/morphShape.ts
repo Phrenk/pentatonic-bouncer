@@ -27,12 +27,14 @@ let shapeLoaded = false;
 const wordHistory: number[] = [];
 const HISTORY_SIZE = 30;
 
+const DOS_FONT = '"Modern DOS 8x8", "Courier New", Courier, monospace';
+
 function createWordCanvas(word: string): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d')!;
   
   const fontSize = 32;
-  ctx.font = `${fontSize}px "Courier New", Courier, monospace`;
+  ctx.font = `${fontSize}px ${DOS_FONT}`;
   
   const metrics = ctx.measureText(word);
   const textWidth = metrics.width;
@@ -42,7 +44,7 @@ function createWordCanvas(word: string): HTMLCanvasElement {
   canvas.width = textWidth + padding * 2;
   canvas.height = textHeight + padding * 2;
   
-  ctx.font = `bold ${fontSize}px "Courier New", Courier, monospace`;
+  ctx.font = `${fontSize}px ${DOS_FONT}`;
   ctx.textBaseline = 'top';
   ctx.textAlign = 'left';
   
@@ -72,10 +74,23 @@ function createWordCanvas(word: string): HTMLCanvasElement {
   return canvas;
 }
 
+async function waitForFont(): Promise<void> {
+  if (document.fonts && document.fonts.load) {
+    try {
+      await document.fonts.load('32px "Modern DOS 8x8"');
+      await document.fonts.ready;
+    } catch (e) {
+      console.warn('Font loading warning:', e);
+    }
+  }
+  await new Promise(resolve => setTimeout(resolve, 500));
+}
+
 export async function loadAndProcessShape(): Promise<void> {
   if (shapeLoaded) return;
   
   try {
+    await waitForFont();
     wordImages = WORDS.map(word => createWordCanvas(word));
     shapeLoaded = true;
   } catch (error) {
