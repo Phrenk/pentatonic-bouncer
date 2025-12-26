@@ -256,8 +256,8 @@ export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: n
   
   const leftMargin = 15;
   const topMargin = 30;
-  const lineHeight = 56;
-  const fontSize = 44;
+  const lineHeight = 45;
+  const fontSize = 35;
   
   const now = performance.now();
   
