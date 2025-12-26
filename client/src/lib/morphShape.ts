@@ -252,10 +252,10 @@ export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: n
   cleanupExpiredWords();
   
   const leftPanelWidth = 200;
-  const leftMargin = 20;
+  const leftMargin = 10;
   const topMargin = 30;
-  const lineHeight = 28;
-  const wordHeight = 22;
+  const lineHeight = 56;
+  const wordHeight = 44;
   
   const now = performance.now();
   
@@ -280,7 +280,7 @@ export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: n
     } else {
       const fadeOutElapsed = elapsed - FADE_IN - VIBRATE - HOLD_NO_VIBRATE;
       opacity = 1 - (fadeOutElapsed / FADE_OUT);
-      shouldVibrate = false;
+      shouldVibrate = true;
     }
     
     const x = leftMargin;
