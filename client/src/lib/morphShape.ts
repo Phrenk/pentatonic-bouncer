@@ -19,6 +19,15 @@ const WORDS = [
   'coscienza', 'consapevolezza', 'mistero', 'infinito', 'limite',
   'unità', 'intreccio', 'residenza', 'cammino', 'ritmo',
   'sorgente', 'riflesso', 'carezza', 'abbraccio', 'quietudine',
+  'chiarezza', 'vibrare', 'risonanza', 'fragilità', 'intuizione',
+  'tatto', 'bruciare', 'fiamma', 'desiderare', 'fuoco',
+  'slancio', 'ferita', 'eccesso', 'vertigine', 'comprendere',
+  'riconoscere', 'senso', 'verità', 'segreto', 'origine',
+  'scavare', 'sprofondare', 'strato', 'fondale', 'interiore',
+  'tacere', 'pausa', 'intervallo', 'scegliere', 'evadere',
+  'spiccare', 'apertura', 'cesura', 'volo', 'possibilità',
+  'promessa', 'lontananza', 'direzione', 'allontanarsi', 'distacco',
+  'margine', 'altrove', 'nostalgia', 'tendere', 'anelare',
 ];
 
 let wordImages: HTMLCanvasElement[] = [];
@@ -26,6 +35,7 @@ let shapeLoaded = false;
 
 const wordHistory: number[] = [];
 const HISTORY_SIZE = 30;
+const wordUsageCount: Map<number, number> = new Map();
 
 const DOS_FONT = '"Modern DOS 8x8", "Courier New", Courier, monospace';
 
@@ -100,8 +110,7 @@ export async function loadAndProcessShape(): Promise<void> {
 }
 
 function getNextWord(): number {
-  const windowSize = Math.min(HISTORY_SIZE, WORDS.length - 1);
-  const recentWindow = wordHistory.slice(-windowSize);
+  const recentWindow = wordHistory.slice(-HISTORY_SIZE);
   
   const available: number[] = [];
   for (let i = 0; i < WORDS.length; i++) {
@@ -116,7 +125,18 @@ function getNextWord(): number {
     }
   }
   
-  const selected = available[Math.floor(Math.random() * available.length)];
+  let minUsage = Infinity;
+  for (const idx of available) {
+    const usage = wordUsageCount.get(idx) || 0;
+    if (usage < minUsage) {
+      minUsage = usage;
+    }
+  }
+  
+  const leastUsed = available.filter(idx => (wordUsageCount.get(idx) || 0) === minUsage);
+  const selected = leastUsed[Math.floor(Math.random() * leastUsed.length)];
+  
+  wordUsageCount.set(selected, (wordUsageCount.get(selected) || 0) + 1);
   
   wordHistory.push(selected);
   if (wordHistory.length > HISTORY_SIZE * 2) {
