@@ -136,11 +136,8 @@ export function PentagonCanvas({
     
     ctx.clearRect(0, 0, width, height);
     
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, LEFT_PANEL_WIDTH, height);
-    
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(LEFT_PANEL_WIDTH, 0, width - LEFT_PANEL_WIDTH, height);
+    ctx.fillStyle = BALL_BLUE;
+    ctx.fillRect(0, 0, width, height);
     
     const pentagonAreaWidth = width - LEFT_PANEL_WIDTH;
     const centerX = LEFT_PANEL_WIDTH + pentagonAreaWidth / 2;
