@@ -160,14 +160,20 @@ export function PentagonCanvas({
       ctx.fill();
     }
     
+    const now = performance.now();
+    const WALL_VIBRATION = 3;
+    
     walls.forEach((wall, index) => {
       if (isWallHidden(index)) return;
       
       const flashIntensity = flashingWallsRef.current.get(index) || 0;
       
+      const vibX = Math.sin(now * 0.08 + index) * WALL_VIBRATION;
+      const vibY = Math.cos(now * 0.11 + index) * WALL_VIBRATION;
+      
       ctx.beginPath();
-      ctx.moveTo(wall.start.x, wall.start.y);
-      ctx.lineTo(wall.end.x, wall.end.y);
+      ctx.moveTo(wall.start.x + vibX, wall.start.y + vibY);
+      ctx.lineTo(wall.end.x + vibX, wall.end.y + vibY);
       
       if (flashIntensity > 0) {
         ctx.shadowColor = WALL_COLORS[index];
@@ -193,9 +199,12 @@ export function PentagonCanvas({
       
       const flashIntensity = flashingInnerWallsRef.current.get(index) || 0;
       
+      const vibX = Math.sin(now * 0.08 + index + 5) * WALL_VIBRATION;
+      const vibY = Math.cos(now * 0.11 + index + 5) * WALL_VIBRATION;
+      
       ctx.beginPath();
-      ctx.moveTo(wall.start.x, wall.start.y);
-      ctx.lineTo(wall.end.x, wall.end.y);
+      ctx.moveTo(wall.start.x + vibX, wall.start.y + vibY);
+      ctx.lineTo(wall.end.x + vibX, wall.end.y + vibY);
       
       if (flashIntensity > 0) {
         ctx.shadowColor = INNER_WALL_COLORS[index];
@@ -214,11 +223,11 @@ export function PentagonCanvas({
       ctx.shadowBlur = 0;
       const endRadius = 2 + flashIntensity * 1.5;
       ctx.beginPath();
-      ctx.arc(wall.start.x, wall.start.y, endRadius, 0, Math.PI * 2);
+      ctx.arc(wall.start.x + vibX, wall.start.y + vibY, endRadius, 0, Math.PI * 2);
       ctx.fillStyle = flashIntensity > 0 ? INNER_WALL_COLORS[index] : 'hsl(var(--foreground) / 0.5)';
       ctx.fill();
       ctx.beginPath();
-      ctx.arc(wall.end.x, wall.end.y, endRadius, 0, Math.PI * 2);
+      ctx.arc(wall.end.x + vibX, wall.end.y + vibY, endRadius, 0, Math.PI * 2);
       ctx.fill();
     });
     
