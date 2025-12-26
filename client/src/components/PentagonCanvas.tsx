@@ -259,22 +259,6 @@ export function PentagonCanvas({
     
     ctx.shadowBlur = 0;
     
-    const ball = ballRef.current;
-    if (ball) {
-      ctx.beginPath();
-      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fill();
-    }
-    
-    const ball2 = ball2Ref.current;
-    if (ball2) {
-      ctx.beginPath();
-      ctx.arc(ball2.x, ball2.y, ball2.radius, 0, Math.PI * 2);
-      ctx.fillStyle = '#000000';
-      ctx.fill();
-    }
-    
     drawMorphingShapes(ctx, dimensions.width, dimensions.height);
   }, [dimensions]);
 
