@@ -1,56 +1,68 @@
-const OUTER_IMAGE_PATHS = [
-  '/images/mnr_1_1766430619497.jpeg',
-  '/images/mnr_2_1766430619497.jpeg',
-  '/images/mnr_3__1766430619497.jpeg',
-  '/images/mnr_4_1766430619498.jpeg',
-  '/images/mnr_5__1766430619498.jpeg',
-  '/images/mnr_6_1766430619498.jpeg',
-  '/images/mnr_7_1766430619499.jpeg',
-  '/images/mnr_8__1766430619499.jpeg',
-  '/images/mnr_9__1766430619499.jpeg',
-  '/images/mnr_10_1766430619499.jpeg',
+const WORDS = [
+  'respirare', 'contemplare', 'ascoltare', 'fluire', 'sostare',
+  'attendere', 'accogliere', 'osservare', 'ricordare', 'dimenticare',
+  'vagare', 'germogliare', 'radicare', 'fiorire', 'dimorare',
+  'scorrere', 'risuonare', 'intrecciare', 'custodire', 'affidarsi',
+  'cullare', 'illuminare', 'dissolvere', 'meditare', 'raccogliere',
+  'seminare', 'equilibrare', 'pacificare', 'armonizzare', 'svelare',
+  'orizzonte', 'silenzio', 'luce', 'ombra', 'respiro',
+  'tempo', 'spazio', 'quiete', 'attesa', 'memoria',
+  'oblio', 'eco', 'soglia', 'sentiero', 'radice',
+  'seme', 'fiore', 'foglia', 'vento', 'acqua',
+  'fiume', 'mare', 'riva', 'cielo', 'stella',
+  'notte', 'alba', 'crepuscolo', 'equilibrio', 'armonia',
+  'pace', 'lentezza', 'profondità', 'vuoto', 'presenza',
+  'assenza', 'cura', 'dimora', 'casa', 'giardino',
+  'bosco', 'pietra', 'sabbia', 'isola', 'viaggio',
+  'ritorno', 'sguardo', 'ascolto', 'parola', 'voce',
+  'pelle', 'battito', 'cuore', 'anima', 'spirito',
+  'coscienza', 'consapevolezza', 'mistero', 'infinito', 'limite',
+  'unità', 'intreccio', 'residenza', 'cammino', 'ritmo',
+  'sorgente', 'riflesso', 'carezza', 'abbraccio', 'quietudine',
 ];
 
-const INNER_IMAGE_PATHS = [
-  '/images/mnr_1_interno__1766432005466.jpeg',
-  '/images/mnr_2_interno_1766432005466.jpeg',
-  '/images/mnr_3_interno_1766432005467.jpeg',
-  '/images/mnr_4_interno_1766432005467.jpeg',
-  '/images/mnr_5_interno_1766432005467.jpeg',
-];
-
-let outerProcessedImages: HTMLCanvasElement[] = [];
-let innerProcessedImages: HTMLCanvasElement[] = [];
+let wordImages: HTMLCanvasElement[] = [];
 let shapeLoaded = false;
 
-const outerHistory: number[] = [];
-const innerHistory: number[] = [];
-const OUTER_HISTORY_SIZE = 10;
-const INNER_HISTORY_SIZE = 5;
+const wordHistory: number[] = [];
+const HISTORY_SIZE = 30;
 
-function extractBlackParts(img: HTMLImageElement): HTMLCanvasElement {
+function createWordCanvas(word: string): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
-  canvas.width = img.width;
-  canvas.height = img.height;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return canvas;
+  const ctx = canvas.getContext('2d')!;
   
-  ctx.drawImage(img, 0, 0);
-  const imageData = ctx.getImageData(0, 0, img.width, img.height);
+  const fontSize = 32;
+  ctx.font = `${fontSize}px "Courier New", Courier, monospace`;
+  
+  const metrics = ctx.measureText(word);
+  const textWidth = metrics.width;
+  const textHeight = fontSize;
+  
+  const padding = 4;
+  canvas.width = textWidth + padding * 2;
+  canvas.height = textHeight + padding * 2;
+  
+  ctx.font = `bold ${fontSize}px "Courier New", Courier, monospace`;
+  ctx.textBaseline = 'top';
+  ctx.textAlign = 'left';
+  
+  ctx.fillStyle = 'black';
+  ctx.fillText(word, padding, padding);
+  
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const pixels = imageData.data;
   
   for (let i = 0; i < pixels.length; i += 4) {
     const r = pixels[i];
     const g = pixels[i + 1];
     const b = pixels[i + 2];
+    const a = pixels[i + 3];
     
-    const brightness = (r + g + b) / 3;
-    
-    if (brightness < 80) {
+    if (a > 0) {
       pixels[i] = 0;
       pixels[i + 1] = 0;
       pixels[i + 2] = 0;
-      pixels[i + 3] = Math.min(255, (80 - brightness) * 4);
+      pixels[i + 3] = a;
     } else {
       pixels[i + 3] = 0;
     }
@@ -60,65 +72,40 @@ function extractBlackParts(img: HTMLImageElement): HTMLCanvasElement {
   return canvas;
 }
 
-async function loadImages(paths: string[]): Promise<HTMLCanvasElement[]> {
-  const loadPromises = paths.map((path) => {
-    return new Promise<HTMLCanvasElement>((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => {
-        const processed = extractBlackParts(img);
-        resolve(processed);
-      };
-      img.onerror = () => reject(new Error(`Failed to load image: ${path}`));
-      img.src = path;
-    });
-  });
-  return Promise.all(loadPromises);
-}
-
 export async function loadAndProcessShape(): Promise<void> {
   if (shapeLoaded) return;
   
   try {
-    const [outer, inner] = await Promise.all([
-      loadImages(OUTER_IMAGE_PATHS),
-      loadImages(INNER_IMAGE_PATHS),
-    ]);
-    outerProcessedImages = outer;
-    innerProcessedImages = inner;
+    wordImages = WORDS.map(word => createWordCanvas(word));
     shapeLoaded = true;
   } catch (error) {
-    console.error('Error loading morph images:', error);
+    console.error('Error creating word images:', error);
     throw error;
   }
 }
 
-function getNextImage(
-  history: number[],
-  historySize: number,
-  imageCount: number
-): number {
-  const windowSize = Math.min(historySize - 1, imageCount - 1);
-  const recentWindow = history.slice(-windowSize);
+function getNextWord(): number {
+  const windowSize = Math.min(HISTORY_SIZE, WORDS.length - 1);
+  const recentWindow = wordHistory.slice(-windowSize);
   
   const available: number[] = [];
-  for (let i = 0; i < imageCount; i++) {
+  for (let i = 0; i < WORDS.length; i++) {
     if (!recentWindow.includes(i)) {
       available.push(i);
     }
   }
   
   if (available.length === 0) {
-    for (let i = 0; i < imageCount; i++) {
+    for (let i = 0; i < WORDS.length; i++) {
       available.push(i);
     }
   }
   
   const selected = available[Math.floor(Math.random() * available.length)];
   
-  history.push(selected);
-  if (history.length > historySize * 2) {
-    history.splice(0, history.length - historySize);
+  wordHistory.push(selected);
+  if (wordHistory.length > HISTORY_SIZE * 2) {
+    wordHistory.splice(0, wordHistory.length - HISTORY_SIZE);
   }
   
   return selected;
@@ -176,8 +163,10 @@ export function startMorph(
   wallStart: { x: number; y: number }, 
   wallEnd: { x: number; y: number }
 ): void {
-  const imageIndex = getNextImage(outerHistory, OUTER_HISTORY_SIZE, outerProcessedImages.length);
+  const imageIndex = getNextWord();
   const color = IMAGE_COLORS[Math.floor(Math.random() * IMAGE_COLORS.length)];
+  
+  const upperHalfY = pentagonCenter.y - pentagonRadius * 0.35;
   
   activeOuterMorphs.set(wallIndex, {
     wallIndex,
@@ -188,7 +177,7 @@ export function startMorph(
     wallEnd,
     isInner: false,
     color,
-    targetPosition: { x: pentagonCenter.x, y: pentagonCenter.y },
+    targetPosition: { x: pentagonCenter.x, y: upperHalfY },
   });
   
   hiddenOuterWalls.add(wallIndex);
@@ -199,7 +188,7 @@ export function startInnerMorph(
   wallStart: { x: number; y: number }, 
   wallEnd: { x: number; y: number }
 ): void {
-  const imageIndex = getNextImage(innerHistory, INNER_HISTORY_SIZE, innerProcessedImages.length);
+  const imageIndex = getNextWord();
   
   const color = IMAGE_COLORS[Math.floor(Math.random() * IMAGE_COLORS.length)];
   
@@ -216,10 +205,7 @@ export function startInnerMorph(
   const useWallStart = refWall ? refWall.start : wallStart;
   const useWallEnd = refWall ? refWall.end : wallEnd;
   
-  const targetPosition = {
-    x: (useWallStart.x + useWallEnd.x) / 2,
-    y: (useWallStart.y + useWallEnd.y) / 2,
-  };
+  const lowerHalfY = pentagonCenter.y + pentagonRadius * 0.35;
   
   activeInnerMorphs.set(wallIndex, {
     wallIndex: refWallIndex,
@@ -230,7 +216,7 @@ export function startInnerMorph(
     wallEnd: useWallEnd,
     isInner: true,
     color,
-    targetPosition,
+    targetPosition: { x: pentagonCenter.x, y: lowerHalfY },
   });
   
   hiddenInnerWalls.add(wallIndex);
@@ -265,11 +251,6 @@ export function isWallHidden(wallIndex: number): boolean {
 export function isInnerWallHidden(wallIndex: number): boolean {
   return hiddenInnerWalls.has(wallIndex);
 }
-
-// Wall naming convention (clockwise):
-// Outer pentagon: PG1=0, PG2=1, PG3=2, PG4=3, PG5=4
-// Inner pentagon: PI1=0, PI2=1, PI3=2, PI4=3, PI5=4
-// Walls PG4 (index 3) and PI4 (index 3) require 180-degree image rotation
 
 function colorizeImage(sourceCanvas: HTMLCanvasElement, color: string): HTMLCanvasElement {
   const coloredCanvas = document.createElement('canvas');
@@ -322,7 +303,6 @@ function drawMorphAnimation(
   const wallDx = morph.wallEnd.x - morph.wallStart.x;
   const wallDy = morph.wallEnd.y - morph.wallStart.y;
   const wallLength = Math.sqrt(wallDx * wallDx + wallDy * wallDy);
-  const wallAngle = Math.atan2(wallDy, wallDx);
   
   const targetHeight = wallLength * 0.5 * sizeMultiplier;
   const aspectRatio = shapeCanvas.width / shapeCanvas.height;
@@ -332,15 +312,10 @@ function drawMorphAnimation(
   const vibrationX = Math.sin(elapsed * 0.08) * vibrationIntensity;
   const vibrationY = Math.cos(elapsed * 0.11) * vibrationIntensity;
   
-  // Rotate 180 degrees for wall index 1 (PG2), 2 (PG3/PI3) and 3 (PG4/PI4) to fix upside-down images
-  const extraRotation = (morph.wallIndex === 1 || morph.wallIndex === 2 || morph.wallIndex === 3) ? Math.PI : 0;
-  
-  // Colorize the image with the assigned color
   const coloredCanvas = colorizeImage(shapeCanvas, morph.color);
   
   ctx.save();
   ctx.translate(midX + vibrationX, midY + vibrationY);
-  ctx.rotate(wallAngle + extraRotation);
   
   ctx.globalAlpha = Math.max(0, Math.min(1, opacity));
   
@@ -357,11 +332,11 @@ function drawMorphAnimation(
 
 export function drawMorphingShapes(ctx: CanvasRenderingContext2D): void {
   Array.from(getActiveMorphs().entries()).forEach(([_, morph]) => {
-    drawMorphAnimation(ctx, morph, outerProcessedImages, OUTER_FADE_IN, OUTER_HOLD, OUTER_FADE_OUT, OUTER_VIBRATION, 1.0);
+    drawMorphAnimation(ctx, morph, wordImages, OUTER_FADE_IN, OUTER_HOLD, OUTER_FADE_OUT, OUTER_VIBRATION, 1.0);
   });
   
   Array.from(getActiveInnerMorphs().entries()).forEach(([_, morph]) => {
-    drawMorphAnimation(ctx, morph, innerProcessedImages, INNER_FADE_IN, INNER_HOLD, INNER_FADE_OUT, INNER_VIBRATION, 1.69);
+    drawMorphAnimation(ctx, morph, wordImages, INNER_FADE_IN, INNER_HOLD, INNER_FADE_OUT, INNER_VIBRATION, 1.69);
   });
 }
 
