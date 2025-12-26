@@ -274,7 +274,7 @@ export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: n
       const progress = elapsed / FADE_IN;
       visibleLetters = Math.ceil(progress * totalLetters);
       opacity = 1;
-      shouldVibrate = false;
+      shouldVibrate = true;
     } else if (elapsed < FADE_IN + VIBRATE) {
       opacity = 1;
       shouldVibrate = true;
