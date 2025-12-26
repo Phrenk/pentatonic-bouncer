@@ -162,18 +162,34 @@ export function PentagonCanvas({
     
     const now = performance.now();
     const WALL_VIBRATION = 3;
+    const GAP_RATIO = 0.12;
     
     walls.forEach((wall, index) => {
       if (isWallHidden(index)) return;
+      
+      const blinkOffset = index * 137;
+      const blinkOn = Math.floor((now + blinkOffset) / 150) % 2 === 0;
+      if (!blinkOn) return;
       
       const flashIntensity = flashingWallsRef.current.get(index) || 0;
       
       const vibX = Math.sin(now * 0.08 + index) * WALL_VIBRATION;
       const vibY = Math.cos(now * 0.11 + index) * WALL_VIBRATION;
       
+      const dx = wall.end.x - wall.start.x;
+      const dy = wall.end.y - wall.start.y;
+      const gappedStart = {
+        x: wall.start.x + dx * GAP_RATIO,
+        y: wall.start.y + dy * GAP_RATIO
+      };
+      const gappedEnd = {
+        x: wall.end.x - dx * GAP_RATIO,
+        y: wall.end.y - dy * GAP_RATIO
+      };
+      
       ctx.beginPath();
-      ctx.moveTo(wall.start.x + vibX, wall.start.y + vibY);
-      ctx.lineTo(wall.end.x + vibX, wall.end.y + vibY);
+      ctx.moveTo(gappedStart.x + vibX, gappedStart.y + vibY);
+      ctx.lineTo(gappedEnd.x + vibX, gappedEnd.y + vibY);
       
       if (flashIntensity > 0) {
         ctx.shadowColor = WALL_COLORS[index];
@@ -197,6 +213,10 @@ export function PentagonCanvas({
     innerWallsVisual.forEach((wall, index) => {
       if (isInnerWallHidden(index)) return;
       
+      const blinkOffset = (index + 5) * 173;
+      const blinkOn = Math.floor((now + blinkOffset) / 150) % 2 === 0;
+      if (!blinkOn) return;
+      
       const flashIntensity = flashingInnerWallsRef.current.get(index) || 0;
       
       const vibX = Math.sin(now * 0.08 + index + 5) * WALL_VIBRATION;
@@ -219,16 +239,6 @@ export function PentagonCanvas({
       
       ctx.lineCap = 'round';
       ctx.stroke();
-      
-      ctx.shadowBlur = 0;
-      const endRadius = 2 + flashIntensity * 1.5;
-      ctx.beginPath();
-      ctx.arc(wall.start.x + vibX, wall.start.y + vibY, endRadius, 0, Math.PI * 2);
-      ctx.fillStyle = flashIntensity > 0 ? INNER_WALL_COLORS[index] : 'hsl(var(--foreground) / 0.5)';
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(wall.end.x + vibX, wall.end.y + vibY, endRadius, 0, Math.PI * 2);
-      ctx.fill();
     });
     
     ctx.shadowBlur = 0;
