@@ -316,33 +316,31 @@ export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: n
     const lastIndex = activeWords.length - 1;
     const elapsed = now - lastWord.startTime;
     
-    const isInFadeOut = elapsed >= FADE_IN + VIBRATE + HOLD_NO_VIBRATE;
+    const isInHoldPhase = elapsed >= FADE_IN + VIBRATE && elapsed < FADE_IN + VIBRATE + HOLD_NO_VIBRATE;
     
-    if (isInFadeOut) {
-      const fadeOutElapsed = elapsed - FADE_IN - VIBRATE - HOLD_NO_VIBRATE;
-      const opacity = 1 - (fadeOutElapsed / FADE_OUT);
+    if (isInHoldPhase) {
+      const blinkOn = Math.floor(elapsed / 150) % 2 === 0;
       
-      const x = leftMargin;
-      const y = topMargin + lastIndex * lineHeight;
-      
-      ctx.font = `${fontSize}px ${DOS_FONT}`;
-      const wordWidth = ctx.measureText(lastWord.word).width;
-      
-      const underscoreX = x + wordWidth + 8;
-      
-      const vibrationX = Math.sin(elapsed * 0.08) * VIBRATION_INTENSITY;
-      const vibrationY = Math.cos(elapsed * 0.11) * VIBRATION_INTENSITY;
-      
-      ctx.save();
-      ctx.globalAlpha = Math.max(0, Math.min(1, opacity));
-      ctx.font = `${fontSize}px ${DOS_FONT}`;
-      ctx.textBaseline = 'top';
-      ctx.textAlign = 'left';
-      ctx.fillStyle = lastWord.color;
-      
-      ctx.fillText('_', underscoreX + vibrationX, y + vibrationY);
-      
-      ctx.restore();
+      if (blinkOn) {
+        const x = leftMargin;
+        const y = topMargin + lastIndex * lineHeight;
+        
+        ctx.font = `${fontSize}px ${DOS_FONT}`;
+        const wordWidth = ctx.measureText(lastWord.word).width;
+        
+        const underscoreX = x + wordWidth + 8;
+        
+        ctx.save();
+        ctx.globalAlpha = 1;
+        ctx.font = `${fontSize}px ${DOS_FONT}`;
+        ctx.textBaseline = 'top';
+        ctx.textAlign = 'left';
+        ctx.fillStyle = lastWord.color;
+        
+        ctx.fillText('_', underscoreX, y);
+        
+        ctx.restore();
+      }
     }
   }
 }
