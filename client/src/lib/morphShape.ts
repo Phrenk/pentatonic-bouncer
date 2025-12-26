@@ -126,16 +126,12 @@ function getNextWord(): number {
   return selected;
 }
 
-export interface MorphAnimation {
-  wallIndex: number;
+export interface WordAnimation {
+  id: number;
   imageIndex: number;
   startTime: number;
   duration: number;
-  wallStart: { x: number; y: number };
-  wallEnd: { x: number; y: number };
-  isInner: boolean;
   color: string;
-  targetPosition: { x: number; y: number };
 }
 
 let pentagonCenter: { x: number; y: number } = { x: 0, y: 0 };
@@ -154,22 +150,18 @@ export function setInnerReferenceWalls(walls: { index: number; start: { x: numbe
   });
 }
 
-const activeOuterMorphs: Map<number, MorphAnimation> = new Map();
-const activeInnerMorphs: Map<number, MorphAnimation> = new Map();
+const activeWords: WordAnimation[] = [];
 const hiddenOuterWalls: Set<number> = new Set();
 const hiddenInnerWalls: Set<number> = new Set();
 
-const OUTER_FADE_IN = 2000;
-const OUTER_HOLD = 4000;
-const OUTER_FADE_OUT = 4000;
-const OUTER_TOTAL = OUTER_FADE_IN + OUTER_HOLD + OUTER_FADE_OUT;
-const OUTER_VIBRATION = 6;
+let animationIdCounter = 0;
 
-const INNER_FADE_IN = 1000;
-const INNER_HOLD = 4000;
-const INNER_FADE_OUT = 3000;
-const INNER_TOTAL = INNER_FADE_IN + INNER_HOLD + INNER_FADE_OUT;
-const INNER_VIBRATION = 4.5;
+const FADE_IN = 4000;
+const VIBRATE = 3000;
+const HOLD_NO_VIBRATE = 1000;
+const FADE_OUT = 4000;
+const TOTAL_DURATION = FADE_IN + VIBRATE + HOLD_NO_VIBRATE + FADE_OUT;
+const VIBRATION_INTENSITY = 5;
 
 const IMAGE_COLORS = ['#FF0000', '#50C878', '#FFA500', '#FFD700', '#800080'];
 
@@ -181,21 +173,19 @@ export function startMorph(
   const imageIndex = getNextWord();
   const color = IMAGE_COLORS[Math.floor(Math.random() * IMAGE_COLORS.length)];
   
-  const upperHalfY = pentagonCenter.y - pentagonRadius * 0.35;
-  
-  activeOuterMorphs.set(wallIndex, {
-    wallIndex,
+  activeWords.push({
+    id: animationIdCounter++,
     imageIndex,
     startTime: performance.now(),
-    duration: OUTER_TOTAL,
-    wallStart,
-    wallEnd,
-    isInner: false,
+    duration: TOTAL_DURATION,
     color,
-    targetPosition: { x: pentagonCenter.x, y: upperHalfY },
   });
   
   hiddenOuterWalls.add(wallIndex);
+  
+  setTimeout(() => {
+    hiddenOuterWalls.delete(wallIndex);
+  }, TOTAL_DURATION);
 }
 
 export function startInnerMorph(
@@ -204,59 +194,29 @@ export function startInnerMorph(
   wallEnd: { x: number; y: number }
 ): void {
   const imageIndex = getNextWord();
-  
   const color = IMAGE_COLORS[Math.floor(Math.random() * IMAGE_COLORS.length)];
   
-  let refWallIndex: number;
-  if (wallIndex === 0) {
-    refWallIndex = 0;
-  } else if (wallIndex === 1 || wallIndex === 2) {
-    refWallIndex = 2;
-  } else {
-    refWallIndex = 4;
-  }
-  
-  const refWall = innerReferenceWalls.get(refWallIndex);
-  const useWallStart = refWall ? refWall.start : wallStart;
-  const useWallEnd = refWall ? refWall.end : wallEnd;
-  
-  const lowerHalfY = pentagonCenter.y + pentagonRadius * 0.35;
-  
-  activeInnerMorphs.set(wallIndex, {
-    wallIndex: refWallIndex,
+  activeWords.push({
+    id: animationIdCounter++,
     imageIndex,
     startTime: performance.now(),
-    duration: INNER_TOTAL,
-    wallStart: useWallStart,
-    wallEnd: useWallEnd,
-    isInner: true,
+    duration: TOTAL_DURATION,
     color,
-    targetPosition: { x: pentagonCenter.x, y: lowerHalfY },
   });
   
   hiddenInnerWalls.add(wallIndex);
+  
+  setTimeout(() => {
+    hiddenInnerWalls.delete(wallIndex);
+  }, TOTAL_DURATION);
 }
 
-export function getActiveMorphs(): Map<number, MorphAnimation> {
-  const now = performance.now();
-  Array.from(activeOuterMorphs.entries()).forEach(([index, morph]) => {
-    if (now - morph.startTime > morph.duration) {
-      activeOuterMorphs.delete(index);
-      hiddenOuterWalls.delete(index);
-    }
-  });
-  return activeOuterMorphs;
+export function getActiveMorphs(): Map<number, WordAnimation> {
+  return new Map();
 }
 
-export function getActiveInnerMorphs(): Map<number, MorphAnimation> {
-  const now = performance.now();
-  Array.from(activeInnerMorphs.entries()).forEach(([index, morph]) => {
-    if (now - morph.startTime > morph.duration) {
-      activeInnerMorphs.delete(index);
-      hiddenInnerWalls.delete(index);
-    }
-  });
-  return activeInnerMorphs;
+export function getActiveInnerMorphs(): Map<number, WordAnimation> {
+  return new Map();
 }
 
 export function isWallHidden(wallIndex: number): boolean {
@@ -281,78 +241,76 @@ function colorizeImage(sourceCanvas: HTMLCanvasElement, color: string): HTMLCanv
   return coloredCanvas;
 }
 
-function drawMorphAnimation(
-  ctx: CanvasRenderingContext2D,
-  morph: MorphAnimation,
-  images: HTMLCanvasElement[],
-  fadeIn: number,
-  hold: number,
-  fadeOut: number,
-  vibrationBase: number,
-  fixedHeight: number
-): void {
+function cleanupExpiredWords(): void {
   const now = performance.now();
-  const elapsed = now - morph.startTime;
-  
-  const shapeCanvas = images[morph.imageIndex];
-  if (!shapeCanvas) return;
-  
-  let opacity = 0;
-  let vibrationMultiplier = 1;
-  
-  if (elapsed < fadeIn) {
-    opacity = elapsed / fadeIn;
-    vibrationMultiplier = 1;
-  } else if (elapsed < fadeIn + hold) {
-    opacity = 1;
-    vibrationMultiplier = 1;
-  } else {
-    const fadeOutElapsed = elapsed - fadeIn - hold;
-    opacity = 1 - (fadeOutElapsed / fadeOut);
-    vibrationMultiplier = 1 - (fadeOutElapsed / fadeOut);
+  while (activeWords.length > 0 && now - activeWords[0].startTime > activeWords[0].duration) {
+    activeWords.shift();
   }
-  
-  const midX = morph.targetPosition.x;
-  const midY = morph.targetPosition.y;
-  
-  const targetHeight = fixedHeight;
-  const aspectRatio = shapeCanvas.width / shapeCanvas.height;
-  const targetWidth = targetHeight * aspectRatio;
-  
-  const vibrationIntensity = vibrationMultiplier * vibrationBase;
-  const vibrationX = Math.sin(elapsed * 0.08) * vibrationIntensity;
-  const vibrationY = Math.cos(elapsed * 0.11) * vibrationIntensity;
-  
-  const coloredCanvas = colorizeImage(shapeCanvas, morph.color);
-  
-  ctx.save();
-  ctx.translate(midX + vibrationX, midY + vibrationY);
-  
-  ctx.globalAlpha = Math.max(0, Math.min(1, opacity));
-  
-  ctx.drawImage(
-    coloredCanvas,
-    -targetWidth / 2,
-    -targetHeight / 2,
-    targetWidth,
-    targetHeight
-  );
-  
-  ctx.restore();
 }
 
 export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): void {
-  const minDim = Math.min(canvasWidth, canvasHeight);
-  const pentagonRadius = minDim * 0.4;
-  const innerPentagonRadius = pentagonRadius * 0.35;
-  const fixedHeight = innerPentagonRadius * 0.7;
+  cleanupExpiredWords();
   
-  Array.from(getActiveMorphs().entries()).forEach(([_, morph]) => {
-    drawMorphAnimation(ctx, morph, wordImages, OUTER_FADE_IN, OUTER_HOLD, OUTER_FADE_OUT, OUTER_VIBRATION, fixedHeight);
-  });
+  const leftPanelWidth = 200;
+  const leftMargin = 20;
+  const topMargin = 30;
+  const lineHeight = 28;
+  const wordHeight = 22;
   
-  Array.from(getActiveInnerMorphs().entries()).forEach(([_, morph]) => {
-    drawMorphAnimation(ctx, morph, wordImages, INNER_FADE_IN, INNER_HOLD, INNER_FADE_OUT, INNER_VIBRATION, fixedHeight);
+  const now = performance.now();
+  
+  activeWords.forEach((word, index) => {
+    const shapeCanvas = wordImages[word.imageIndex];
+    if (!shapeCanvas) return;
+    
+    const elapsed = now - word.startTime;
+    
+    let opacity = 0;
+    let shouldVibrate = false;
+    
+    if (elapsed < FADE_IN) {
+      opacity = elapsed / FADE_IN;
+      shouldVibrate = false;
+    } else if (elapsed < FADE_IN + VIBRATE) {
+      opacity = 1;
+      shouldVibrate = true;
+    } else if (elapsed < FADE_IN + VIBRATE + HOLD_NO_VIBRATE) {
+      opacity = 1;
+      shouldVibrate = false;
+    } else {
+      const fadeOutElapsed = elapsed - FADE_IN - VIBRATE - HOLD_NO_VIBRATE;
+      opacity = 1 - (fadeOutElapsed / FADE_OUT);
+      shouldVibrate = false;
+    }
+    
+    const x = leftMargin;
+    const y = topMargin + index * lineHeight;
+    
+    let vibrationX = 0;
+    let vibrationY = 0;
+    if (shouldVibrate) {
+      vibrationX = Math.sin(elapsed * 0.08) * VIBRATION_INTENSITY;
+      vibrationY = Math.cos(elapsed * 0.11) * VIBRATION_INTENSITY;
+    }
+    
+    const aspectRatio = shapeCanvas.width / shapeCanvas.height;
+    const targetHeight = wordHeight;
+    const targetWidth = targetHeight * aspectRatio;
+    
+    const coloredCanvas = colorizeImage(shapeCanvas, word.color);
+    
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, Math.min(1, opacity));
+    
+    ctx.drawImage(
+      coloredCanvas,
+      x + vibrationX,
+      y + vibrationY,
+      targetWidth,
+      targetHeight
+    );
+    
+    ctx.restore();
   });
 }
 

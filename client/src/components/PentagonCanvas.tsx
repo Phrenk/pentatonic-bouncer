@@ -41,6 +41,8 @@ const INNER_WALL_COLORS = [
   BALL_BLUE,
 ];
 
+const LEFT_PANEL_WIDTH = 220;
+
 export function PentagonCanvas({ 
   isPlaying, 
   speed, 
@@ -72,9 +74,10 @@ export function PentagonCanvas({
     if (!container) return;
     
     const rect = container.getBoundingClientRect();
-    const size = Math.min(rect.width, rect.height) * 0.95;
+    const pentagonSize = Math.min(rect.width - LEFT_PANEL_WIDTH, rect.height) * 0.95;
+    const totalWidth = LEFT_PANEL_WIDTH + pentagonSize;
     
-    setDimensions({ width: size, height: size });
+    setDimensions({ width: totalWidth, height: pentagonSize });
   }, []);
 
   useEffect(() => {
@@ -90,9 +93,10 @@ export function PentagonCanvas({
   useEffect(() => {
     if (dimensions.width === 0) return;
     
-    const centerX = dimensions.width / 2;
+    const pentagonAreaWidth = dimensions.width - LEFT_PANEL_WIDTH;
+    const centerX = LEFT_PANEL_WIDTH + pentagonAreaWidth / 2;
     const centerY = dimensions.height / 2;
-    const pentagonRadius = Math.min(dimensions.width, dimensions.height) * 0.4;
+    const pentagonRadius = Math.min(pentagonAreaWidth, dimensions.height) * 0.4;
     const originalInnerRadius = pentagonRadius * 0.35;
     const enlargedInnerRadius = originalInnerRadius * 1.95;
     
@@ -133,9 +137,13 @@ export function PentagonCanvas({
     ctx.clearRect(0, 0, width, height);
     
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, width, height);
+    ctx.fillRect(0, 0, LEFT_PANEL_WIDTH, height);
     
-    const centerX = width / 2;
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(LEFT_PANEL_WIDTH, 0, width - LEFT_PANEL_WIDTH, height);
+    
+    const pentagonAreaWidth = width - LEFT_PANEL_WIDTH;
+    const centerX = LEFT_PANEL_WIDTH + pentagonAreaWidth / 2;
     const centerY = height / 2;
     
     const vertices = verticesRef.current;
