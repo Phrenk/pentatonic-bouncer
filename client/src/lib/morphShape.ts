@@ -308,41 +308,22 @@ export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: n
     
     ctx.fillText(displayText, x + vibrationX, y + vibrationY);
     
-    ctx.restore();
-  });
-  
-  if (activeWords.length > 0) {
-    const lastWord = activeWords[activeWords.length - 1];
-    const lastIndex = activeWords.length - 1;
-    const elapsed = now - lastWord.startTime;
-    
     const isInHoldPhase = elapsed >= FADE_IN + VIBRATE && elapsed < FADE_IN + VIBRATE + HOLD_NO_VIBRATE;
     
     if (isInHoldPhase) {
       const blinkOn = Math.floor(elapsed / 150) % 2 === 0;
       
       if (blinkOn) {
-        const x = leftMargin;
-        const y = topMargin + lastIndex * lineHeight;
-        
-        ctx.font = `${fontSize}px ${DOS_FONT}`;
-        const wordWidth = ctx.measureText(lastWord.word).width;
-        
+        const wordWidth = ctx.measureText(wordText).width;
         const underscoreX = x + wordWidth + 8;
         
-        ctx.save();
         ctx.globalAlpha = 1;
-        ctx.font = `${fontSize}px ${DOS_FONT}`;
-        ctx.textBaseline = 'top';
-        ctx.textAlign = 'left';
-        ctx.fillStyle = lastWord.color;
-        
         ctx.fillText('_', underscoreX, y);
-        
-        ctx.restore();
       }
     }
-  }
+    
+    ctx.restore();
+  });
 }
 
 export function isShapeLoaded(): boolean {
