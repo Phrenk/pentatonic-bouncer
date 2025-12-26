@@ -55,8 +55,8 @@ export function PentagonCanvas({
   const ballRef = useRef<Ball | null>(null);
   const verticesRef = useRef<Point[]>([]);
   const wallsRef = useRef<Wall[]>([]);
-  const innerVerticesRef = useRef<Point[]>([]);
   const innerWallsRef = useRef<Wall[]>([]);
+  const innerWallsVisualRef = useRef<Wall[]>([]);
   const lastCollisionRef = useRef<number>(-1);
   const collisionCooldownRef = useRef<number>(0);
   const flashingWallsRef = useRef<Map<number, number>>(new Map());
@@ -103,8 +103,11 @@ export function PentagonCanvas({
     verticesRef.current = generatePentagonVertices(centerX, centerY, pentagonRadius);
     wallsRef.current = getWalls(verticesRef.current);
     
-    const innerWallLength = pentagonRadius * 0.25;
-    innerWallsRef.current = generateRadialInnerWalls(centerX, centerY, verticesRef.current, innerWallLength);
+    const outerWallLength = 2 * pentagonRadius * Math.sin(Math.PI / 5);
+    const collisionLength = pentagonRadius * 0.25;
+    const { collision, visual } = generateRadialInnerWalls(centerX, centerY, verticesRef.current, collisionLength, outerWallLength);
+    innerWallsRef.current = collision;
+    innerWallsVisualRef.current = visual;
     
     setPentagonCenter(centerX, centerY, pentagonRadius);
     
@@ -194,9 +197,9 @@ export function PentagonCanvas({
       ctx.fill();
     });
     
-    const innerWalls = innerWallsRef.current;
+    const innerWallsVisual = innerWallsVisualRef.current;
     
-    innerWalls.forEach((wall, index) => {
+    innerWallsVisual.forEach((wall, index) => {
       if (isInnerWallHidden(index)) return;
       
       const flashIntensity = flashingInnerWallsRef.current.get(index) || 0;

@@ -33,9 +33,11 @@ export function generateRadialInnerWalls(
   centerX: number, 
   centerY: number, 
   outerVertices: Point[],
-  wallLength: number
-): Wall[] {
-  const walls: Wall[] = [];
+  collisionLength: number,
+  visualLength: number
+): { collision: Wall[], visual: Wall[] } {
+  const collisionWalls: Wall[] = [];
+  const visualWalls: Wall[] = [];
   
   for (let i = 0; i < 5; i++) {
     const vertexIndex = (i + 1) % 5;
@@ -48,22 +50,35 @@ export function generateRadialInnerWalls(
     const unitY = dy / dist;
     
     const midDist = dist / 2;
-    const halfLength = wallLength / 2;
     
-    walls.push({
+    const collisionHalfLength = collisionLength / 2;
+    collisionWalls.push({
       start: {
-        x: vertex.x + unitX * (midDist - halfLength),
-        y: vertex.y + unitY * (midDist - halfLength),
+        x: vertex.x + unitX * (midDist - collisionHalfLength),
+        y: vertex.y + unitY * (midDist - collisionHalfLength),
       },
       end: {
-        x: vertex.x + unitX * (midDist + halfLength),
-        y: vertex.y + unitY * (midDist + halfLength),
+        x: vertex.x + unitX * (midDist + collisionHalfLength),
+        y: vertex.y + unitY * (midDist + collisionHalfLength),
+      },
+      index: i,
+    });
+    
+    const visualHalfLength = visualLength / 2;
+    visualWalls.push({
+      start: {
+        x: vertex.x + unitX * (midDist - visualHalfLength),
+        y: vertex.y + unitY * (midDist - visualHalfLength),
+      },
+      end: {
+        x: vertex.x + unitX * (midDist + visualHalfLength),
+        y: vertex.y + unitY * (midDist + visualHalfLength),
       },
       index: i,
     });
   }
   
-  return walls;
+  return { collision: collisionWalls, visual: visualWalls };
 }
 
 export function getWalls(vertices: Point[]): Wall[] {
