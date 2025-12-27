@@ -23,7 +23,7 @@ const SOSTANTIVI = [
   'spirito', 'coscienza', 'consapevolezza', 'mistero', 'infinito', 'limite',
   'cammino', 'ritmo', 'sorgente', 'riflesso', 'carezza', 'abbraccio',
   'quietudine', 'veglia', 'inabissarsi', 'miraggio', 'deragliare',
-  'fenditura', 'visione', 'smarrimento', 'abisso', 'crepa', 'cenere',
+  'fenditura', 'visione', 'smarrimento', 'abisso', 'crepa',
   'deriva', 'rovina', 'essenza', 'assoluto', 'enigma', 'rivelazione',
   'mancanza', 'spinta', 'richiamo', 'varco', 'esito', 'approdo',
   'risposta', 'marea', 'bosco', 'corrente', 'chiarezza', 'risonanza',
@@ -50,7 +50,7 @@ const AGGETTIVI = [
   'latente', 'profondo', 'sottile', 'remoto', 'interiore', 'vasto',
   'fragile', 'opaco', 'illuminato', 'sospeso', 'nudo', 'invisibile',
   'irrisolto', 'denso', 'mobile', 'instabile', 'primordiale', 'essenziale',
-  'segreto', 'quieto', 'ardente', 'incosapevole', 'incompiuto', 'obliquo',
+  'segreto', 'quieto', 'ardente', 'inconsapevole', 'incompiuto', 'obliquo',
   'intuitivo', 'notturno', 'inerme', 'leggero', 'aperto'
 ];
 
