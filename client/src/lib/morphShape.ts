@@ -155,7 +155,7 @@ function createWordCanvas(word: string): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d')!;
   
-  const fontSize = 32;
+  const fontSize = 22;
   ctx.font = `${fontSize}px ${DOS_FONT}`;
   
   const metrics = ctx.measureText(word);
@@ -429,8 +429,8 @@ export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: n
   
   const leftMargin = 15;
   const topMargin = 30;
-  const lineHeight = 32;
-  const fontSize = 24;
+  const lineHeight = 22;
+  const fontSize = 17;
   
   ctx.font = `${fontSize}px ${DOS_FONT}`;
   ctx.textBaseline = 'top';
