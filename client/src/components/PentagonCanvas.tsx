@@ -22,23 +22,25 @@ interface PentagonCanvasProps {
   onBounceCountChange: (count: number) => void;
 }
 
-const BALL_BLUE = 'hsl(225, 85%, 42%)';
-const LIGHT_BLUE = 'hsl(225, 85%, 71%)';
+const BALL_BLUE = '#000000';
+const LIGHT_BLUE = '#330000';
+
+const LCD_RED = '#FF0000';
 
 const WALL_COLORS = [
-  '#FFFFFF',
-  '#FFFFFF',
-  '#FFFFFF',
-  '#FFFFFF',
-  '#FFFFFF',
+  LCD_RED,
+  LCD_RED,
+  LCD_RED,
+  LCD_RED,
+  LCD_RED,
 ];
 
 const INNER_WALL_COLORS = [
-  '#FFFFFF',
-  '#FFFFFF',
-  '#FFFFFF',
-  '#FFFFFF',
-  '#FFFFFF',
+  LCD_RED,
+  LCD_RED,
+  LCD_RED,
+  LCD_RED,
+  LCD_RED,
 ];
 
 const LEFT_PANEL_WIDTH = 220;

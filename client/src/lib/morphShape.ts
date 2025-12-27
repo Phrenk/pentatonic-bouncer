@@ -149,7 +149,7 @@ function getNextWordInSeries(): { word: string; isLastInSeries: boolean; seriesH
 let wordImages: HTMLCanvasElement[] = [];
 let shapeLoaded = false;
 
-const DOS_FONT = '"Modern DOS 8x8", "Courier New", Courier, monospace';
+const DOS_FONT = '"Digital 7", "Courier New", Courier, monospace';
 
 function createWordCanvas(word: string): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
@@ -196,7 +196,7 @@ function createWordCanvas(word: string): HTMLCanvasElement {
 async function waitForFont(): Promise<void> {
   if (document.fonts && document.fonts.load) {
     try {
-      await document.fonts.load('32px "Modern DOS 8x8"');
+      await document.fonts.load('32px "Digital 7"');
       await document.fonts.ready;
     } catch (e) {
       console.warn('Font loading warning:', e);
@@ -300,7 +300,7 @@ const COMPOSITION_HOLD = 3000;
 const COMPOSITION_FADE_OUT = 4000;
 const COMPOSITION_TOTAL = COMPOSITION_FADE_IN + COMPOSITION_VIBRATE + COMPOSITION_HOLD + COMPOSITION_FADE_OUT;
 
-const IMAGE_COLORS = ['#FFFFFF'];
+const IMAGE_COLORS = ['#FF0000'];
 
 let pendingComposition: { words: string[]; triggerTime: number } | null = null;
 
@@ -415,7 +415,7 @@ function checkPendingComposition(): void {
       word: pendingComposition.words.join(' '),
       startTime: now,
       duration: COMPOSITION_TOTAL,
-      color: '#FFFFFF',
+      color: '#FF0000',
       isComposition: true,
       compositionWords: pendingComposition.words
     });
