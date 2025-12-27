@@ -212,23 +212,39 @@ export function PentagonCanvas({
         y: wall.end.y - dy * GAP_RATIO
       };
       
+      const lineWidth = flashIntensity > 0 ? 6 + 2 * flashIntensity : 5;
+      const len = Math.sqrt(dx * dx + dy * dy);
+      const ux = dx / len;
+      const uy = dy / len;
+      const px = -uy;
+      const py = ux;
+      const bevel = lineWidth * 0.6;
+      const hw = lineWidth / 2;
+      
+      const sx = gappedStart.x + vibX;
+      const sy = gappedStart.y + vibY;
+      const ex = gappedEnd.x + vibX;
+      const ey = gappedEnd.y + vibY;
+      
       ctx.beginPath();
-      ctx.moveTo(gappedStart.x + vibX, gappedStart.y + vibY);
-      ctx.lineTo(gappedEnd.x + vibX, gappedEnd.y + vibY);
+      ctx.moveTo(sx + ux * bevel + px * hw, sy + uy * bevel + py * hw);
+      ctx.lineTo(ex - ux * bevel + px * hw, ey - uy * bevel + py * hw);
+      ctx.lineTo(ex + px * hw, ey + py * hw);
+      ctx.lineTo(ex - px * hw, ey - py * hw);
+      ctx.lineTo(ex - ux * bevel - px * hw, ey - uy * bevel - py * hw);
+      ctx.lineTo(sx + ux * bevel - px * hw, sy + uy * bevel - py * hw);
+      ctx.lineTo(sx - px * hw, sy - py * hw);
+      ctx.lineTo(sx + px * hw, sy + py * hw);
+      ctx.closePath();
       
       if (flashIntensity > 0) {
         ctx.shadowColor = WALL_COLORS[index];
         ctx.shadowBlur = 20 * flashIntensity;
-        ctx.strokeStyle = WALL_COLORS[index];
-        ctx.lineWidth = 4 + 2 * flashIntensity;
       } else {
         ctx.shadowBlur = 0;
-        ctx.strokeStyle = WALL_COLORS[index];
-        ctx.lineWidth = 3;
       }
-      
-      ctx.lineCap = 'round';
-      ctx.stroke();
+      ctx.fillStyle = WALL_COLORS[index];
+      ctx.fill();
     });
     
     ctx.shadowBlur = 0;
@@ -247,23 +263,41 @@ export function PentagonCanvas({
       const vibX = Math.sin(now * 0.08 + index + 5) * WALL_VIBRATION;
       const vibY = Math.cos(now * 0.11 + index + 5) * WALL_VIBRATION;
       
+      const dx = wall.end.x - wall.start.x;
+      const dy = wall.end.y - wall.start.y;
+      const lineWidth = flashIntensity > 0 ? 4 + 2 * flashIntensity : 3;
+      const len = Math.sqrt(dx * dx + dy * dy);
+      const ux = dx / len;
+      const uy = dy / len;
+      const px = -uy;
+      const py = ux;
+      const bevel = lineWidth * 0.6;
+      const hw = lineWidth / 2;
+      
+      const sx = wall.start.x + vibX;
+      const sy = wall.start.y + vibY;
+      const ex = wall.end.x + vibX;
+      const ey = wall.end.y + vibY;
+      
       ctx.beginPath();
-      ctx.moveTo(wall.start.x + vibX, wall.start.y + vibY);
-      ctx.lineTo(wall.end.x + vibX, wall.end.y + vibY);
+      ctx.moveTo(sx + ux * bevel + px * hw, sy + uy * bevel + py * hw);
+      ctx.lineTo(ex - ux * bevel + px * hw, ey - uy * bevel + py * hw);
+      ctx.lineTo(ex + px * hw, ey + py * hw);
+      ctx.lineTo(ex - px * hw, ey - py * hw);
+      ctx.lineTo(ex - ux * bevel - px * hw, ey - uy * bevel - py * hw);
+      ctx.lineTo(sx + ux * bevel - px * hw, sy + uy * bevel - py * hw);
+      ctx.lineTo(sx - px * hw, sy - py * hw);
+      ctx.lineTo(sx + px * hw, sy + py * hw);
+      ctx.closePath();
       
       if (flashIntensity > 0) {
         ctx.shadowColor = INNER_WALL_COLORS[index];
         ctx.shadowBlur = 15 * flashIntensity;
-        ctx.strokeStyle = INNER_WALL_COLORS[index];
-        ctx.lineWidth = 2 + 2 * flashIntensity;
       } else {
         ctx.shadowBlur = 0;
-        ctx.strokeStyle = INNER_WALL_COLORS[index];
-        ctx.lineWidth = 2;
       }
-      
-      ctx.lineCap = 'round';
-      ctx.stroke();
+      ctx.fillStyle = INNER_WALL_COLORS[index];
+      ctx.fill();
     });
     
     ctx.shadowBlur = 0;
