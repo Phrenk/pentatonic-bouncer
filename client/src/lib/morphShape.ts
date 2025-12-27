@@ -1,41 +1,153 @@
-const WORDS = [
-  'respirare', 'contemplare', 'ascoltare', 'fluire', 'sostare',
-  'attendere', 'accogliere', 'osservare', 'ricordare', 'dimenticare',
-  'vagare', 'germogliare', 'radicare', 'fiorire', 'dimorare',
-  'scorrere', 'risuonare', 'custodire', 'affidarsi',
-  'cullare', 'illuminare', 'dissolvere', 'meditare', 'raccogliere',
-  'seminare', 'equilibrare', 'pacificare', 'armonizzare', 'svelare',
-  'orizzonte', 'silenzio', 'luce', 'ombra', 'respiro',
-  'tempo', 'spazio', 'quiete', 'attesa', 'memoria',
-  'oblio', 'eco', 'soglia', 'sentiero', 'radice',
-  'seme', 'fiore', 'vento', 'acqua',
-  'fiume', 'mare', 'riva', 'cielo', 'stella',
-  'notte', 'alba', 'crepuscolo', 'equilibrio', 'armonia',
-  'pace', 'lentezza', 'profondità', 'vuoto', 'presenza',
-  'assenza', 'cura', 'dimora', 'casa', 'giardino',
-  'bosco', 'pietra', 'sabbia', 'isola', 'viaggio',
-  'ritorno', 'sguardo', 'ascolto', 'parola', 'voce',
-  'pelle', 'battito', 'cuore', 'anima', 'spirito',
-  'coscienza', 'consapevolezza', 'mistero', 'infinito', 'limite',
-  'unità', 'intreccio', 'residenza', 'cammino', 'ritmo',
-  'sorgente', 'riflesso', 'carezza', 'abbraccio', 'quietudine',
-  'chiarezza', 'vibrare', 'risonanza', 'fragilità', 'intuizione',
-  'tatto', 'bruciare', 'fiamma', 'desiderare', 'fuoco',
-  'slancio', 'ferita', 'eccesso', 'vertigine', 'comprendere',
-  'riconoscere', 'senso', 'verità', 'segreto', 'origine',
-  'scavare', 'sprofondare', 'strato', 'fondale', 'interiore',
-  'tacere', 'pausa', 'intervallo', 'scegliere', 'evadere',
-  'spiccare', 'apertura', 'cesura', 'volo', 'possibilità',
-  'promessa', 'lontananza', 'direzione', 'allontanarsi', 'distacco',
-  'margine', 'altrove', 'nostalgia', 'tendere', 'anelare',
+const VERBI = [
+  'contemplare', 'ascoltare', 'fluire', 'sostare', 'attendere',
+  'accogliere', 'osservare', 'ricordare', 'dimenticare', 'vagare',
+  'germogliare', 'radicare', 'fiorire', 'dimorare', 'scorrere',
+  'risuonare', 'custodire', 'affidarsi', 'cullare', 'illuminare',
+  'dissolvere', 'meditare', 'raccogliere', 'seminare', 'equilibrare',
+  'pacificare', 'armonizzare', 'svelare', 'svanire', 'fluttuare',
+  'trasfigurare', 'corrodere', 'trascendere', 'invocare', 'dischiudere',
+  'placare', 'distendere', 'sospendere', 'inseguire', 'sciogliere',
+  'ricomporre', 'erodere', 'vibrare', 'desiderare', 'comprendere',
+  'riconoscere', 'scavare', 'sprofondare', 'scegliere', 'evadere',
+  'tendere', 'anelare', 'rivelare', 'bruciare', 'tacere', 'allontanare'
 ];
+
+const SOSTANTIVI = [
+  'silenzio', 'luce', 'ombra', 'respiro', 'tempo', 'spazio', 'quiete',
+  'attesa', 'memoria', 'oblio', 'eco', 'soglia', 'sentiero', 'radice',
+  'seme', 'fiore', 'vento', 'acqua', 'fiume', 'mare', 'riva', 'cielo',
+  'stella', 'notte', 'alba', 'crepuscolo', 'equilibrio', 'armonia',
+  'pace', 'lentezza', 'vuoto', 'presenza', 'assenza', 'cura', 'dimora',
+  'casa', 'pietra', 'sabbia', 'isola', 'viaggio', 'ritorno', 'sguardo',
+  'ascolto', 'parola', 'voce', 'pelle', 'battito', 'cuore', 'anima',
+  'spirito', 'coscienza', 'consapevolezza', 'mistero', 'infinito', 'limite',
+  'cammino', 'ritmo', 'sorgente', 'riflesso', 'carezza', 'abbraccio',
+  'quietudine', 'veglia', 'inabissarsi', 'miraggio', 'deragliare',
+  'fenditura', 'visione', 'smarrimento', 'abisso', 'crepa', 'cenere',
+  'deriva', 'rovina', 'essenza', 'assoluto', 'enigma', 'rivelazione',
+  'mancanza', 'spinta', 'richiamo', 'varco', 'esito', 'approdo',
+  'risposta', 'marea', 'bosco', 'corrente', 'chiarezza', 'risonanza',
+  'intuizione', 'fiamma', 'fuoco', 'slancio', 'ferita', 'eccesso',
+  'vertigine', 'senso', 'segreto', 'origine', 'strato', 'fondale',
+  'interiore', 'pausa', 'intervallo', 'apertura', 'cesura', 'volo',
+  'promessa', 'lontananza', 'direzione', 'distacco', 'margine', 'altrove',
+  'nostalgia'
+];
+
+const AVVERBI_AZIONE = [
+  'silenziosamente', 'gradualmente', 'profondamente', 'intimamente',
+  'segretamente', 'naturalmente', 'inavvertitamente', 'dolcemente',
+  'oscuramente', 'improvvisamente', 'continuamente', 'interiormente',
+  'separatamente', 'liberamente'
+];
+
+const AVVERBI_NON_AZIONE = [
+  'vicino', 'oltre', 'dentro', 'insieme', 'solo', 'altrove', 'dovunque',
+  'ancora', 'sempre', 'mai', 'appena', 'ora', 'domani', 'oggi'
+];
+
+const AGGETTIVI = [
+  'latente', 'profondo', 'sottile', 'remoto', 'interiore', 'vasto',
+  'fragile', 'opaco', 'illuminato', 'sospeso', 'nudo', 'invisibile',
+  'irrisolto', 'denso', 'mobile', 'instabile', 'primordiale', 'essenziale',
+  'segreto', 'quieto', 'ardente', 'incosapevole', 'incompiuto', 'obliquo',
+  'intuitivo', 'notturno', 'inerme', 'leggero', 'aperto'
+];
+
+type WordCategory = 'verbo' | 'sostantivo' | 'avverbio_azione' | 'avverbio_non_azione' | 'aggettivo';
+
+interface SeriesStep {
+  category: WordCategory;
+}
+
+interface Series {
+  steps: SeriesStep[];
+  hasComposition: boolean;
+}
+
+const SERIES: Series[] = [
+  { steps: [{ category: 'verbo' }, { category: 'sostantivo' }], hasComposition: false },
+  { steps: [{ category: 'verbo' }, { category: 'sostantivo' }, { category: 'sostantivo' }], hasComposition: true },
+  { steps: [{ category: 'sostantivo' }, { category: 'sostantivo' }], hasComposition: false },
+  { steps: [{ category: 'avverbio_azione' }, { category: 'verbo' }, { category: 'sostantivo' }], hasComposition: true },
+  { steps: [{ category: 'verbo' }, { category: 'avverbio_azione' }], hasComposition: false },
+  { steps: [{ category: 'verbo' }, { category: 'aggettivo' }], hasComposition: true },
+];
+
+let currentSeriesIndex = 0;
+let currentStepIndex = 0;
+let currentSeriesWords: string[] = [];
+
+const categoryHistory: Map<WordCategory, number[]> = new Map();
+const HISTORY_SIZE = 10;
+
+function getCategoryWords(category: WordCategory): string[] {
+  switch (category) {
+    case 'verbo': return VERBI;
+    case 'sostantivo': return SOSTANTIVI;
+    case 'avverbio_azione': return AVVERBI_AZIONE;
+    case 'avverbio_non_azione': return AVVERBI_NON_AZIONE;
+    case 'aggettivo': return AGGETTIVI;
+  }
+}
+
+function getNextWordFromCategory(category: WordCategory): string {
+  const words = getCategoryWords(category);
+  const history = categoryHistory.get(category) || [];
+  
+  const available: number[] = [];
+  for (let i = 0; i < words.length; i++) {
+    if (!history.includes(i)) {
+      available.push(i);
+    }
+  }
+  
+  if (available.length === 0) {
+    for (let i = 0; i < words.length; i++) {
+      available.push(i);
+    }
+    categoryHistory.set(category, []);
+  }
+  
+  const selected = available[Math.floor(Math.random() * available.length)];
+  
+  const newHistory = [...history, selected];
+  if (newHistory.length > HISTORY_SIZE) {
+    newHistory.shift();
+  }
+  categoryHistory.set(category, newHistory);
+  
+  return words[selected];
+}
+
+function getNextWordInSeries(): { word: string; isLastInSeries: boolean; seriesHasComposition: boolean; seriesWords: string[] } {
+  const series = SERIES[currentSeriesIndex];
+  const step = series.steps[currentStepIndex];
+  
+  let category = step.category;
+  if (category === 'avverbio_azione' && currentSeriesIndex === 4 && currentStepIndex === 1) {
+    category = Math.random() < 0.5 ? 'avverbio_azione' : 'avverbio_non_azione';
+  }
+  
+  const word = getNextWordFromCategory(category);
+  currentSeriesWords.push(word);
+  
+  const isLastInSeries = currentStepIndex === series.steps.length - 1;
+  const seriesWords = [...currentSeriesWords];
+  
+  currentStepIndex++;
+  
+  if (currentStepIndex >= series.steps.length) {
+    currentStepIndex = 0;
+    currentSeriesIndex = (currentSeriesIndex + 1) % SERIES.length;
+    currentSeriesWords = [];
+  }
+  
+  return { word, isLastInSeries, seriesHasComposition: series.hasComposition, seriesWords };
+}
 
 let wordImages: HTMLCanvasElement[] = [];
 let shapeLoaded = false;
-
-const wordHistory: number[] = [];
-const HISTORY_SIZE = 30;
-const wordUsageCount: Map<number, number> = new Map();
 
 const DOS_FONT = '"Modern DOS 8x8", "Courier New", Courier, monospace';
 
@@ -65,9 +177,6 @@ function createWordCanvas(word: string): HTMLCanvasElement {
   const pixels = imageData.data;
   
   for (let i = 0; i < pixels.length; i += 4) {
-    const r = pixels[i];
-    const g = pixels[i + 1];
-    const b = pixels[i + 2];
     const a = pixels[i + 3];
     
     if (a > 0) {
@@ -101,58 +210,21 @@ export async function loadAndProcessShape(): Promise<void> {
   
   try {
     await waitForFont();
-    wordImages = WORDS.map(word => createWordCanvas(word));
     shapeLoaded = true;
   } catch (error) {
-    console.error('Error creating word images:', error);
+    console.error('Error loading fonts:', error);
     throw error;
   }
 }
 
-function getNextWord(): number {
-  const recentWindow = wordHistory.slice(-HISTORY_SIZE);
-  
-  const available: number[] = [];
-  for (let i = 0; i < WORDS.length; i++) {
-    if (!recentWindow.includes(i)) {
-      available.push(i);
-    }
-  }
-  
-  if (available.length === 0) {
-    for (let i = 0; i < WORDS.length; i++) {
-      available.push(i);
-    }
-  }
-  
-  let minUsage = Infinity;
-  for (const idx of available) {
-    const usage = wordUsageCount.get(idx) || 0;
-    if (usage < minUsage) {
-      minUsage = usage;
-    }
-  }
-  
-  const leastUsed = available.filter(idx => (wordUsageCount.get(idx) || 0) === minUsage);
-  const selected = leastUsed[Math.floor(Math.random() * leastUsed.length)];
-  
-  wordUsageCount.set(selected, (wordUsageCount.get(selected) || 0) + 1);
-  
-  wordHistory.push(selected);
-  if (wordHistory.length > HISTORY_SIZE * 2) {
-    wordHistory.splice(0, wordHistory.length - HISTORY_SIZE);
-  }
-  
-  return selected;
-}
-
 export interface WordAnimation {
   id: number;
-  imageIndex: number;
   word: string;
   startTime: number;
   duration: number;
   color: string;
+  isComposition?: boolean;
+  compositionWords?: string[];
 }
 
 let pentagonCenter: { x: number; y: number } = { x: 0, y: 0 };
@@ -184,24 +256,38 @@ const FADE_OUT = 4000;
 const TOTAL_DURATION = FADE_IN + VIBRATE + HOLD_NO_VIBRATE + FADE_OUT;
 const VIBRATION_INTENSITY = 5;
 
+const COMPOSITION_FADE_IN = 4000;
+const COMPOSITION_VIBRATE = 3000;
+const COMPOSITION_HOLD = 3000;
+const COMPOSITION_FADE_OUT = 4000;
+const COMPOSITION_TOTAL = COMPOSITION_FADE_IN + COMPOSITION_VIBRATE + COMPOSITION_HOLD + COMPOSITION_FADE_OUT;
+
 const IMAGE_COLORS = ['#FFFFFF'];
+
+let pendingComposition: { words: string[]; triggerTime: number } | null = null;
 
 export function startMorph(
   wallIndex: number, 
   wallStart: { x: number; y: number }, 
   wallEnd: { x: number; y: number }
 ): void {
-  const imageIndex = getNextWord();
+  const { word, isLastInSeries, seriesHasComposition, seriesWords } = getNextWordInSeries();
   const color = IMAGE_COLORS[Math.floor(Math.random() * IMAGE_COLORS.length)];
   
   activeWords.push({
     id: animationIdCounter++,
-    imageIndex,
-    word: WORDS[imageIndex],
+    word,
     startTime: performance.now(),
     duration: TOTAL_DURATION,
     color,
   });
+  
+  if (isLastInSeries && seriesHasComposition) {
+    pendingComposition = {
+      words: seriesWords,
+      triggerTime: performance.now() + TOTAL_DURATION
+    };
+  }
   
   hiddenOuterWalls.add(wallIndex);
   
@@ -215,17 +301,23 @@ export function startInnerMorph(
   wallStart: { x: number; y: number }, 
   wallEnd: { x: number; y: number }
 ): void {
-  const imageIndex = getNextWord();
+  const { word, isLastInSeries, seriesHasComposition, seriesWords } = getNextWordInSeries();
   const color = IMAGE_COLORS[Math.floor(Math.random() * IMAGE_COLORS.length)];
   
   activeWords.push({
     id: animationIdCounter++,
-    imageIndex,
-    word: WORDS[imageIndex],
+    word,
     startTime: performance.now(),
     duration: TOTAL_DURATION,
     color,
   });
+  
+  if (isLastInSeries && seriesHasComposition) {
+    pendingComposition = {
+      words: seriesWords,
+      triggerTime: performance.now() + TOTAL_DURATION
+    };
+  }
   
   hiddenInnerWalls.add(wallIndex);
   
@@ -266,18 +358,8 @@ export function hideInnerWall(wallIndex: number): void {
   }, TOTAL_DURATION);
 }
 
-function colorizeImage(sourceCanvas: HTMLCanvasElement, color: string): HTMLCanvasElement {
-  const coloredCanvas = document.createElement('canvas');
-  coloredCanvas.width = sourceCanvas.width;
-  coloredCanvas.height = sourceCanvas.height;
-  const colorCtx = coloredCanvas.getContext('2d')!;
-  
-  colorCtx.drawImage(sourceCanvas, 0, 0);
-  colorCtx.globalCompositeOperation = 'source-in';
-  colorCtx.fillStyle = color;
-  colorCtx.fillRect(0, 0, coloredCanvas.width, coloredCanvas.height);
-  
-  return coloredCanvas;
+export function isShapeLoaded(): boolean {
+  return shapeLoaded;
 }
 
 function cleanupExpiredWords(): void {
@@ -287,81 +369,135 @@ function cleanupExpiredWords(): void {
   }
 }
 
+function checkPendingComposition(): void {
+  const now = performance.now();
+  if (pendingComposition && now >= pendingComposition.triggerTime) {
+    activeWords.push({
+      id: animationIdCounter++,
+      word: pendingComposition.words.join(' '),
+      startTime: now,
+      duration: COMPOSITION_TOTAL,
+      color: '#FFFFFF',
+      isComposition: true,
+      compositionWords: pendingComposition.words
+    });
+    pendingComposition = null;
+  }
+}
+
 export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): void {
   cleanupExpiredWords();
+  checkPendingComposition();
   
   const leftMargin = 15;
   const topMargin = 30;
   const lineHeight = 45;
   const fontSize = 35;
   
-  const now = performance.now();
+  ctx.font = `${fontSize}px ${DOS_FONT}`;
+  ctx.textBaseline = 'top';
+  ctx.textAlign = 'left';
   
-  activeWords.forEach((wordAnim, index) => {
-    const elapsed = now - wordAnim.startTime;
-    const wordText = wordAnim.word;
-    const totalLetters = wordText.length;
+  const now = performance.now();
+  let yOffset = topMargin;
+  
+  for (const anim of activeWords) {
+    const elapsed = now - anim.startTime;
     
-    let opacity = 1;
-    let shouldVibrate = false;
-    let visibleLetters = totalLetters;
-    
-    if (elapsed < FADE_IN) {
-      const progress = elapsed / FADE_IN;
-      visibleLetters = Math.ceil(progress * totalLetters);
-      opacity = 1;
-      shouldVibrate = true;
-    } else if (elapsed < FADE_IN + VIBRATE) {
-      opacity = 1;
-      shouldVibrate = true;
-    } else if (elapsed < FADE_IN + VIBRATE + HOLD_NO_VIBRATE) {
-      opacity = 1;
-      shouldVibrate = false;
-    } else {
-      const fadeOutElapsed = elapsed - FADE_IN - VIBRATE - HOLD_NO_VIBRATE;
-      opacity = 1 - (fadeOutElapsed / FADE_OUT);
-      shouldVibrate = true;
-    }
-    
-    const x = leftMargin;
-    const y = topMargin + index * lineHeight;
-    
-    let vibrationX = 0;
-    let vibrationY = 0;
-    if (shouldVibrate) {
-      vibrationX = Math.sin(elapsed * 0.08) * VIBRATION_INTENSITY;
-      vibrationY = Math.cos(elapsed * 0.11) * VIBRATION_INTENSITY;
-    }
-    
-    const displayText = wordText.substring(0, visibleLetters);
-    
-    ctx.save();
-    ctx.globalAlpha = Math.max(0, Math.min(1, opacity));
-    ctx.font = `${fontSize}px ${DOS_FONT}`;
-    ctx.textBaseline = 'top';
-    ctx.textAlign = 'left';
-    ctx.fillStyle = wordAnim.color;
-    
-    ctx.fillText(displayText, x + vibrationX, y + vibrationY);
-    
-    const isInHoldPhase = elapsed >= FADE_IN + VIBRATE && elapsed < FADE_IN + VIBRATE + HOLD_NO_VIBRATE;
-    
-    if (isInHoldPhase) {
-      const blinkOn = Math.floor(elapsed / 150) % 2 === 0;
+    if (anim.isComposition && anim.compositionWords) {
+      const composedText = anim.compositionWords.join(' ');
+      const totalChars = composedText.length;
+      const charRevealTime = COMPOSITION_FADE_IN / totalChars;
       
-      if (blinkOn) {
-        const wordWidth = ctx.measureText(wordText).width;
-        const underscoreX = x + wordWidth + 8;
-        
-        ctx.globalAlpha = 1;
-        ctx.fillText('_', underscoreX, y);
+      let opacity = 1;
+      let vibrationX = 0;
+      let vibrationY = 0;
+      let showUnderscore = true;
+      let underscoreBlink = true;
+      
+      if (elapsed < COMPOSITION_FADE_IN) {
+        opacity = Math.min(1, elapsed / 1000);
+        vibrationX = (Math.random() - 0.5) * VIBRATION_INTENSITY * 2;
+        vibrationY = (Math.random() - 0.5) * VIBRATION_INTENSITY * 2;
+      } else if (elapsed < COMPOSITION_FADE_IN + COMPOSITION_VIBRATE) {
+        vibrationX = (Math.random() - 0.5) * VIBRATION_INTENSITY * 2;
+        vibrationY = (Math.random() - 0.5) * VIBRATION_INTENSITY * 2;
+      } else if (elapsed < COMPOSITION_FADE_IN + COMPOSITION_VIBRATE + COMPOSITION_HOLD) {
+        underscoreBlink = Math.floor((elapsed - COMPOSITION_FADE_IN - COMPOSITION_VIBRATE) / 300) % 2 === 0;
+      } else {
+        const fadeElapsed = elapsed - COMPOSITION_FADE_IN - COMPOSITION_VIBRATE - COMPOSITION_HOLD;
+        opacity = 1 - (fadeElapsed / COMPOSITION_FADE_OUT);
+        showUnderscore = false;
       }
+      
+      if (opacity > 0) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, Math.min(1, opacity));
+        ctx.fillStyle = anim.color;
+        
+        let displayText = '';
+        if (elapsed < COMPOSITION_FADE_IN) {
+          const charsToShow = Math.floor(elapsed / charRevealTime);
+          displayText = composedText.substring(0, charsToShow);
+        } else {
+          displayText = composedText;
+        }
+        
+        if (showUnderscore && underscoreBlink) {
+          displayText += '_';
+        }
+        
+        ctx.fillText(displayText, leftMargin + vibrationX, yOffset + vibrationY);
+        ctx.restore();
+      }
+      
+      yOffset += lineHeight;
+    } else {
+      let opacity = 1;
+      let vibrationX = 0;
+      let vibrationY = 0;
+      let showUnderscore = true;
+      
+      if (elapsed < FADE_IN) {
+        opacity = elapsed / FADE_IN;
+        vibrationX = (Math.random() - 0.5) * VIBRATION_INTENSITY * 2;
+        vibrationY = (Math.random() - 0.5) * VIBRATION_INTENSITY * 2;
+      } else if (elapsed < FADE_IN + VIBRATE) {
+        vibrationX = (Math.random() - 0.5) * VIBRATION_INTENSITY * 2;
+        vibrationY = (Math.random() - 0.5) * VIBRATION_INTENSITY * 2;
+      } else if (elapsed < FADE_IN + VIBRATE + HOLD_NO_VIBRATE) {
+      } else {
+        const fadeElapsed = elapsed - FADE_IN - VIBRATE - HOLD_NO_VIBRATE;
+        opacity = 1 - (fadeElapsed / FADE_OUT);
+        showUnderscore = false;
+      }
+      
+      if (opacity > 0) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, Math.min(1, opacity));
+        ctx.fillStyle = anim.color;
+        
+        const totalChars = anim.word.length;
+        const charRevealTime = FADE_IN / totalChars;
+        let displayText = '';
+        
+        if (elapsed < FADE_IN) {
+          const charsToShow = Math.floor(elapsed / charRevealTime);
+          displayText = anim.word.substring(0, charsToShow);
+        } else {
+          displayText = anim.word;
+        }
+        
+        const underscoreBlink = Math.floor(elapsed / 300) % 2 === 0;
+        if (showUnderscore && underscoreBlink) {
+          displayText += '_';
+        }
+        
+        ctx.fillText(displayText, leftMargin + vibrationX, yOffset + vibrationY);
+        ctx.restore();
+      }
+      
+      yOffset += lineHeight;
     }
-    
-    ctx.restore();
-  });
-}
-
-export function isShapeLoaded(): boolean {
-  return shapeLoaded;
+  }
 }
