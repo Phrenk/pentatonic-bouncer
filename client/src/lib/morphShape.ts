@@ -429,8 +429,8 @@ export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: n
   
   const leftMargin = 15;
   const topMargin = 30;
-  const lineHeight = 22;
-  const fontSize = 17;
+  const lineHeight = 24;
+  const fontSize = 19;
   
   ctx.font = `${fontSize}px ${DOS_FONT}`;
   ctx.textBaseline = 'top';
