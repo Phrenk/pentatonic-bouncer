@@ -230,10 +230,20 @@ export interface WordAnimation {
 let pentagonCenter: { x: number; y: number } = { x: 0, y: 0 };
 let pentagonRadius: number = 0;
 let innerReferenceWalls: Map<number, { start: { x: number; y: number }; end: { x: number; y: number } }> = new Map();
+let outerReferenceWalls: Map<number, { start: { x: number; y: number }; end: { x: number; y: number } }> = new Map();
+const wordOverlapHiddenOuter: Set<number> = new Set();
+const wordOverlapHiddenInner: Set<number> = new Set();
 
 export function setPentagonCenter(x: number, y: number, radius: number): void {
   pentagonCenter = { x, y };
   pentagonRadius = radius;
+}
+
+export function setOuterReferenceWalls(walls: { index: number; start: { x: number; y: number }; end: { x: number; y: number } }[]): void {
+  outerReferenceWalls.clear();
+  walls.forEach(wall => {
+    outerReferenceWalls.set(wall.index, { start: wall.start, end: wall.end });
+  });
 }
 
 export function setInnerReferenceWalls(walls: { index: number; start: { x: number; y: number }; end: { x: number; y: number } }[]): void {
@@ -241,6 +251,34 @@ export function setInnerReferenceWalls(walls: { index: number; start: { x: numbe
   walls.forEach(wall => {
     innerReferenceWalls.set(wall.index, { start: wall.start, end: wall.end });
   });
+}
+
+function lineIntersectsRect(x1: number, y1: number, x2: number, y2: number, rx: number, ry: number, rw: number, rh: number): boolean {
+  function lineIntersectsLine(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, x4: number, y4: number): boolean {
+    const denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+    if (Math.abs(denom) < 0.0001) return false;
+    const ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denom;
+    const ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denom;
+    return ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1;
+  }
+  
+  if (x1 >= rx && x1 <= rx + rw && y1 >= ry && y1 <= ry + rh) return true;
+  if (x2 >= rx && x2 <= rx + rw && y2 >= ry && y2 <= ry + rh) return true;
+  
+  if (lineIntersectsLine(x1, y1, x2, y2, rx, ry, rx + rw, ry)) return true;
+  if (lineIntersectsLine(x1, y1, x2, y2, rx + rw, ry, rx + rw, ry + rh)) return true;
+  if (lineIntersectsLine(x1, y1, x2, y2, rx + rw, ry + rh, rx, ry + rh)) return true;
+  if (lineIntersectsLine(x1, y1, x2, y2, rx, ry + rh, rx, ry)) return true;
+  
+  return false;
+}
+
+export function isWallHiddenByWordOverlap(wallIndex: number): boolean {
+  return wordOverlapHiddenOuter.has(wallIndex);
+}
+
+export function isInnerWallHiddenByWordOverlap(wallIndex: number): boolean {
+  return wordOverlapHiddenInner.has(wallIndex);
 }
 
 const activeWords: WordAnimation[] = [];
@@ -400,6 +438,42 @@ export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: n
   
   const now = performance.now();
   let yOffset = topMargin;
+  
+  wordOverlapHiddenOuter.clear();
+  wordOverlapHiddenInner.clear();
+  
+  const wordBounds: { x: number; y: number; width: number; height: number }[] = [];
+  let tempY = topMargin;
+  for (const anim of activeWords) {
+    const elapsed = now - anim.startTime;
+    if (elapsed < anim.duration) {
+      let displayText = anim.isComposition && anim.compositionWords 
+        ? anim.compositionWords.join(' ') 
+        : anim.word;
+      displayText += '_';
+      const textWidth = ctx.measureText(displayText).width;
+      wordBounds.push({
+        x: leftMargin - 5,
+        y: tempY - 5,
+        width: textWidth + 10,
+        height: fontSize + 10
+      });
+    }
+    tempY += lineHeight;
+  }
+  
+  for (const bounds of wordBounds) {
+    outerReferenceWalls.forEach((wall, index) => {
+      if (lineIntersectsRect(wall.start.x, wall.start.y, wall.end.x, wall.end.y, bounds.x, bounds.y, bounds.width, bounds.height)) {
+        wordOverlapHiddenOuter.add(index);
+      }
+    });
+    innerReferenceWalls.forEach((wall, index) => {
+      if (lineIntersectsRect(wall.start.x, wall.start.y, wall.end.x, wall.end.y, bounds.x, bounds.y, bounds.width, bounds.height)) {
+        wordOverlapHiddenInner.add(index);
+      }
+    });
+  }
   
   for (const anim of activeWords) {
     const elapsed = now - anim.startTime;

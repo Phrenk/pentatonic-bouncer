@@ -12,7 +12,7 @@ import {
   type Point 
 } from '@/lib/physics';
 import { playNote, getNoteLabel, playInnerNote, resumeAudioContext } from '@/lib/audio';
-import { loadAndProcessShape, startMorph, startInnerMorph, drawMorphingShapes, isShapeLoaded, isWallHidden, isInnerWallHidden, hideOuterWall, hideInnerWall, setPentagonCenter, setInnerReferenceWalls } from '@/lib/morphShape';
+import { loadAndProcessShape, startMorph, startInnerMorph, drawMorphingShapes, isShapeLoaded, isWallHidden, isInnerWallHidden, hideOuterWall, hideInnerWall, setPentagonCenter, setInnerReferenceWalls, setOuterReferenceWalls, isWallHiddenByWordOverlap, isInnerWallHiddenByWordOverlap } from '@/lib/morphShape';
 
 interface PentagonCanvasProps {
   isPlaying: boolean;
@@ -123,6 +123,13 @@ export function PentagonCanvas({
     }));
     setInnerReferenceWalls(refWalls);
     
+    const outerRefWalls = wallsRef.current.map((wall, idx) => ({
+      index: idx,
+      start: wall.start,
+      end: wall.end,
+    }));
+    setOuterReferenceWalls(outerRefWalls);
+    
     if (!ballRef.current) {
       ballRef.current = initializeBall(centerX, centerY, speed);
     }
@@ -181,7 +188,7 @@ export function PentagonCanvas({
     const GAP_RATIO = 0.12;
     
     walls.forEach((wall, index) => {
-      if (isWallHidden(index)) return;
+      if (isWallHidden(index) || isWallHiddenByWordOverlap(index)) return;
       
       const flashIntensity = flashingWallsRef.current.get(index) || 0;
       
@@ -227,7 +234,7 @@ export function PentagonCanvas({
     const innerWallsVisual = innerWallsVisualRef.current;
     
     innerWallsVisual.forEach((wall, index) => {
-      if (isInnerWallHidden(index)) return;
+      if (isInnerWallHidden(index) || isInnerWallHiddenByWordOverlap(index)) return;
       
       const flashIntensity = flashingInnerWallsRef.current.get(index) || 0;
       
