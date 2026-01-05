@@ -306,7 +306,7 @@ const COMPOSITION_TOTAL = COMPOSITION_LETTER_REVEAL + COMPOSITION_HOLD + COMPOSI
 
 const IMAGE_COLORS = ['#FF0000'];
 
-let pendingComposition: { words: string[]; triggerTime: number } | null = null;
+const pendingCompositions: { words: string[]; triggerTime: number }[] = [];
 
 export function startMorph(
   wallIndex: number, 
@@ -325,10 +325,10 @@ export function startMorph(
   });
   
   if (isLastInSeries) {
-    pendingComposition = {
+    pendingCompositions.push({
       words: patternWords,
       triggerTime: performance.now() + TOTAL_DURATION
-    };
+    });
   }
   
   hiddenOuterWalls.add(wallIndex);
@@ -355,10 +355,10 @@ export function startInnerMorph(
   });
   
   if (isLastInSeries) {
-    pendingComposition = {
+    pendingCompositions.push({
       words: patternWords,
       triggerTime: performance.now() + TOTAL_DURATION
-    };
+    });
   }
   
   hiddenInnerWalls.add(wallIndex);
@@ -413,17 +413,17 @@ function cleanupExpiredWords(): void {
 
 function checkPendingComposition(): void {
   const now = performance.now();
-  if (pendingComposition && now >= pendingComposition.triggerTime) {
+  while (pendingCompositions.length > 0 && now >= pendingCompositions[0].triggerTime) {
+    const composition = pendingCompositions.shift()!;
     activeWords.push({
       id: animationIdCounter++,
-      word: pendingComposition.words.join(' '),
+      word: composition.words.join(' '),
       startTime: now,
       duration: COMPOSITION_TOTAL,
       color: '#FF0000',
       isComposition: true,
-      compositionWords: pendingComposition.words
+      compositionWords: composition.words
     });
-    pendingComposition = null;
   }
 }
 
