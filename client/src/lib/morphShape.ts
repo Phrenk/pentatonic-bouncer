@@ -12,16 +12,23 @@ const VERBI = [
 ];
 
 const SOSTANTIVI = [
-  'respirare', 'contemplare', 'ascoltare', 'fluire', 'sostare', 'attendere',
-  'accogliere', 'osservare', 'ricordare', 'dimenticare', 'vagare', 'germogliare',
-  'radicare', 'fiorire', 'dimorare', 'scorrere', 'risuonare', 'custodire',
-  'affidarsi', 'cullare', 'illuminare', 'dissolvere', 'meditare', 'raccogliere',
-  'seminare', 'equilibrare', 'pacificare', 'armonizzare', 'svelare', 'svanire',
-  'fluttuare', 'trasfigurare', 'corrodere', 'trascendere', 'invocare', 'dischiudere',
-  'placare', 'distendere', 'sospendere', 'inseguire', 'sciogliere', 'ricomporre',
-  'erodere', 'vibrare', 'desiderare', 'comprendere', 'riconoscere', 'scavare',
-  'sprofondare', 'scegliere', 'evadere', 'tendere', 'anelare', 'rivelare',
-  'bruciare', 'tacere', 'allontanare'
+  'orizzonte', 'silenzio', 'luce', 'ombra', 'respiro', 'tempo', 'spazio', 'quiete',
+  'attesa', 'memoria', 'oblio', 'eco', 'soglia', 'sentiero', 'radice', 'seme',
+  'fiore', 'vento', 'acqua', 'fiume', 'mare', 'riva', 'cielo', 'stella', 'notte',
+  'alba', 'crepuscolo', 'equilibrio', 'armonia', 'pace', 'lentezza', 'profondità',
+  'vuoto', 'presenza', 'assenza', 'cura', 'dimora', 'casa', 'pietra', 'sabbia',
+  'isola', 'viaggio', 'ritorno', 'sguardo', 'ascolto', 'parola', 'voce', 'pelle',
+  'battito', 'cuore', 'anima', 'spirito', 'coscienza', 'consapevolezza', 'mistero',
+  'infinito', 'limite', 'unità', 'cammino', 'ritmo', 'sorgente', 'riflesso',
+  'carezza', 'abbraccio', 'quietudine', 'veglia', 'inabissarsi', 'miraggio',
+  'deragliare', 'fenditura', 'visione', 'smarrimento', 'abisso', 'crepa', 'cenere',
+  'deriva', 'rovina', 'essenza', 'assoluto', 'enigma', 'rivelazione', 'mancanza',
+  'spinta', 'richiamo', 'varco', 'esito', 'approdo', 'risposta', 'marea', 'bosco',
+  'corrente', 'chiarezza', 'risonanza', 'fragilità', 'intuizione', 'fiamma', 'fuoco',
+  'slancio', 'ferita', 'eccesso', 'vertigine', 'senso', 'verità', 'segreto',
+  'origine', 'strato', 'fondale', 'interiore', 'pausa', 'intervallo', 'apertura',
+  'cesura', 'volo', 'possibilità', 'promessa', 'lontananza', 'direzione', 'distacco',
+  'margine', 'altrove', 'nostalgia'
 ];
 
 const AVVERBI = [
