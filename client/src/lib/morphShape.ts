@@ -1,82 +1,56 @@
 const VERBI = [
-  'contemplare', 'ascoltare', 'fluire', 'sostare', 'attendere',
-  'accogliere', 'osservare', 'ricordare', 'dimenticare', 'vagare',
-  'germogliare', 'radicare', 'fiorire', 'dimorare', 'scorrere',
-  'risuonare', 'custodire', 'affidarsi', 'cullare', 'illuminare',
-  'dissolvere', 'meditare', 'raccogliere', 'seminare', 'equilibrare',
-  'pacificare', 'armonizzare', 'svelare', 'svanire', 'fluttuare',
-  'trasfigurare', 'consumare', 'trascendere', 'invocare', 'dischiudere',
-  'placare', 'distendere', 'sospendere', 'inseguire', 'sciogliere',
-  'ricomporre', 'erodere', 'vibrare', 'desiderare', 'comprendere',
-  'riconoscere', 'scavare', 'sprofondare', 'scegliere', 'evadere',
-  'tendere', 'anelare', 'rivelare', 'bruciare', 'tacere', 'allontanare'
+  'respirare', 'contemplare', 'ascoltare', 'fluire', 'sostare', 'attendere',
+  'accogliere', 'osservare', 'ricordare', 'dimenticare', 'vagare', 'germogliare',
+  'radicare', 'fiorire', 'dimorare', 'scorrere', 'risuonare', 'custodire',
+  'affidarsi', 'cullare', 'illuminare', 'dissolvere', 'meditare', 'raccogliere',
+  'seminare', 'equilibrare', 'pacificare', 'armonizzare', 'svelare', 'svanire',
+  'fluttuare', 'trasfigurare', 'corrodere', 'trascendere', 'invocare', 'dischiudere',
+  'placare', 'distendere', 'sospendere', 'inseguire', 'sciogliere', 'ricomporre',
+  'erodere', 'vibrare', 'desiderare', 'comprendere', 'riconoscere', 'scavare',
+  'sprofondare', 'scegliere', 'evadere', 'tendere', 'anelare', 'rivelare',
+  'bruciare', 'tacere', 'allontanare'
 ];
 
 const SOSTANTIVI = [
-  'silenzio', 'luce', 'ombra', 'respiro', 'tempo', 'spazio', 'quiete',
-  'attesa', 'memoria', 'oblio', 'eco', 'soglia', 'sentiero', 'radice',
-  'seme', 'fiore', 'vento', 'acqua', 'fiume', 'mare', 'riva', 'cielo',
-  'stella', 'notte', 'alba', 'crepuscolo', 'equilibrio', 'armonia',
-  'pace', 'lentezza', 'vuoto', 'presenza', 'assenza', 'cura', 'dimora',
-  'casa', 'pietra', 'nebbia', 'isola', 'viaggio', 'ritorno', 'sguardo',
-  'ascolto', 'parola', 'voce', 'corpo', 'battito', 'cuore', 'anima',
-  'spirito', 'coscienza', 'consapevolezza', 'mistero', 'infinito', 'limite',
-  'cammino', 'ritmo', 'sorgente', 'riflesso', 'carezza', 'abbraccio',
-  'quietudine', 'veglia', 'inabissarsi', 'miraggio', 'deragliare',
-  'fenditura', 'visione', 'smarrimento', 'abisso', 'crepa',
-  'deriva', 'rovina', 'essenza', 'assoluto', 'enigma', 'rivelazione',
-  'mancanza', 'spinta', 'richiamo', 'varco', 'esito', 'approdo',
-  'risposta', 'marea', 'bosco', 'corrente', 'chiarezza', 'risonanza',
-  'intuizione', 'fiamma', 'fuoco', 'slancio', 'ferita', 'eccesso',
-  'vertigine', 'senso', 'segreto', 'origine', 'strato', 'fondo',
-  'interiore', 'pausa', 'intervallo', 'apertura', 'cesura', 'volo',
-  'promessa', 'lontananza', 'direzione', 'distacco', 'margine', 'altrove',
-  'nostalgia'
+  'respirare', 'contemplare', 'ascoltare', 'fluire', 'sostare', 'attendere',
+  'accogliere', 'osservare', 'ricordare', 'dimenticare', 'vagare', 'germogliare',
+  'radicare', 'fiorire', 'dimorare', 'scorrere', 'risuonare', 'custodire',
+  'affidarsi', 'cullare', 'illuminare', 'dissolvere', 'meditare', 'raccogliere',
+  'seminare', 'equilibrare', 'pacificare', 'armonizzare', 'svelare', 'svanire',
+  'fluttuare', 'trasfigurare', 'corrodere', 'trascendere', 'invocare', 'dischiudere',
+  'placare', 'distendere', 'sospendere', 'inseguire', 'sciogliere', 'ricomporre',
+  'erodere', 'vibrare', 'desiderare', 'comprendere', 'riconoscere', 'scavare',
+  'sprofondare', 'scegliere', 'evadere', 'tendere', 'anelare', 'rivelare',
+  'bruciare', 'tacere', 'allontanare'
 ];
 
-const AVVERBI_AZIONE = [
-  'silenziosamente', 'gradualmente', 'profondamente', 'intimamente',
-  'segretamente', 'naturalmente', 'inavvertitamente', 'dolcemente',
-  'oscuramente', 'improvvisamente', 'continuamente', 'interiormente',
-  'separatamente', 'liberamente'
-];
-
-const AVVERBI_NON_AZIONE = [
-  'vicino', 'oltre', 'dentro', 'insieme', 'solo', 'altrove', 'dovunque',
+const AVVERBI = [
+  'lentamente', 'silenziosamente', 'gradualmente', 'profondamente', 'intimamente',
+  'segretamente', 'naturalmente', 'inavvertitamente', 'dolcemente', 'oscuramente',
+  'improvvisamente', 'continuamente', 'interiormente', 'separatamente', 'liberamente',
+  'lontano', 'vicino', 'oltre', 'dentro', 'insieme', 'solo', 'altrove', 'dovunque',
   'ancora', 'sempre', 'mai', 'appena', 'ora', 'domani', 'oggi'
 ];
 
 const AGGETTIVI = [
-  'latente', 'profondo', 'sottile', 'remoto', 'interiore', 'vasto',
-  'fragile', 'opaco', 'illuminato', 'sospeso', 'nudo', 'invisibile',
-  'irrisolto', 'denso', 'mobile', 'instabile', 'primordiale', 'essenziale',
-  'segreto', 'quieto', 'ardente', 'inconsapevole', 'incompiuto', 'obliquo',
-  'intuitivo', 'notturno', 'inerme', 'leggero', 'aperto'
+  'silente', 'latente', 'profondo', 'sottile', 'remoto', 'interiore', 'vasto',
+  'fragile', 'opaco', 'illuminato', 'sospeso', 'nudo', 'invisibile', 'irrisolto',
+  'denso', 'mobile', 'instabile', 'primordiale', 'essenziale', 'segreto', 'quieto',
+  'ardente', 'inconsapevole', 'incompiuto', 'obliquo', 'intuitivo', 'notturno',
+  'inerme', 'leggero', 'aperto'
 ];
 
-type WordCategory = 'verbo' | 'sostantivo' | 'avverbio_azione' | 'avverbio_non_azione' | 'aggettivo';
+type WordCategory = 'verbo' | 'sostantivo' | 'avverbio' | 'aggettivo';
 
-interface SeriesStep {
-  category: WordCategory;
-}
+type SyntacticPattern = 'S+A' | 'V+S' | 'A+S' | 'S+S' | 'V+R' | 'A+A' | 'V+V';
 
-interface Series {
-  steps: SeriesStep[];
-  hasComposition: boolean;
-}
-
-const SERIES: Series[] = [
-  { steps: [{ category: 'verbo' }, { category: 'sostantivo' }], hasComposition: false },
-  { steps: [{ category: 'verbo' }, { category: 'sostantivo' }, { category: 'sostantivo' }], hasComposition: true },
-  { steps: [{ category: 'sostantivo' }, { category: 'sostantivo' }], hasComposition: false },
-  { steps: [{ category: 'avverbio_azione' }, { category: 'verbo' }, { category: 'sostantivo' }], hasComposition: true },
-  { steps: [{ category: 'verbo' }, { category: 'avverbio_azione' }], hasComposition: false },
-  { steps: [{ category: 'verbo' }, { category: 'aggettivo' }], hasComposition: true },
+const SYNTACTIC_PATTERNS: SyntacticPattern[] = [
+  'S+A', 'V+S', 'A+S', 'S+S', 'V+R', 'A+A', 'V+V'
 ];
 
-let currentSeriesIndex = 0;
+let currentPatternIndex = 0;
 let currentStepIndex = 0;
-let currentSeriesWords: string[] = [];
+let currentPatternWords: string[] = [];
 
 const categoryHistory: Map<WordCategory, number[]> = new Map();
 const HISTORY_SIZE = 10;
@@ -85,8 +59,7 @@ function getCategoryWords(category: WordCategory): string[] {
   switch (category) {
     case 'verbo': return VERBI;
     case 'sostantivo': return SOSTANTIVI;
-    case 'avverbio_azione': return AVVERBI_AZIONE;
-    case 'avverbio_non_azione': return AVVERBI_NON_AZIONE;
+    case 'avverbio': return AVVERBI;
     case 'aggettivo': return AGGETTIVI;
   }
 }
@@ -120,30 +93,55 @@ function getNextWordFromCategory(category: WordCategory): string {
   return words[selected];
 }
 
-function getNextWordInSeries(): { word: string; isLastInSeries: boolean; seriesHasComposition: boolean; seriesWords: string[] } {
-  const series = SERIES[currentSeriesIndex];
-  const step = series.steps[currentStepIndex];
+function convertToGerund(verb: string): string {
+  if (verb.endsWith('are')) {
+    return verb.slice(0, -3) + 'ando';
+  } else if (verb.endsWith('ere')) {
+    return verb.slice(0, -3) + 'endo';
+  } else if (verb.endsWith('ire')) {
+    return verb.slice(0, -3) + 'endo';
+  } else if (verb.endsWith('rsi')) {
+    return verb.slice(0, -3) + 'ndosi';
+  }
+  return verb + 'ndo';
+}
+
+function getPatternCategories(pattern: SyntacticPattern): [WordCategory, WordCategory] {
+  switch (pattern) {
+    case 'S+A': return ['sostantivo', 'aggettivo'];
+    case 'V+S': return ['verbo', 'sostantivo'];
+    case 'A+S': return ['aggettivo', 'sostantivo'];
+    case 'S+S': return ['sostantivo', 'sostantivo'];
+    case 'V+R': return ['verbo', 'avverbio'];
+    case 'A+A': return ['aggettivo', 'aggettivo'];
+    case 'V+V': return ['verbo', 'verbo'];
+  }
+}
+
+function getNextWordInSeries(): { word: string; isLastInSeries: boolean; patternWords: string[]; currentPattern: SyntacticPattern } {
+  const pattern = SYNTACTIC_PATTERNS[currentPatternIndex];
+  const categories = getPatternCategories(pattern);
   
-  let category = step.category;
-  if (category === 'avverbio_azione' && currentSeriesIndex === 4 && currentStepIndex === 1) {
-    category = Math.random() < 0.5 ? 'avverbio_azione' : 'avverbio_non_azione';
+  let word = getNextWordFromCategory(categories[currentStepIndex]);
+  
+  if (pattern === 'V+V' && currentStepIndex === 1) {
+    word = convertToGerund(word);
   }
   
-  const word = getNextWordFromCategory(category);
-  currentSeriesWords.push(word);
+  currentPatternWords.push(word);
   
-  const isLastInSeries = currentStepIndex === series.steps.length - 1;
-  const seriesWords = [...currentSeriesWords];
+  const isLastInSeries = currentStepIndex === 1;
+  const patternWords = [...currentPatternWords];
   
   currentStepIndex++;
   
-  if (currentStepIndex >= series.steps.length) {
+  if (currentStepIndex >= 2) {
     currentStepIndex = 0;
-    currentSeriesIndex = (currentSeriesIndex + 1) % SERIES.length;
-    currentSeriesWords = [];
+    currentPatternIndex = (currentPatternIndex + 1) % SYNTACTIC_PATTERNS.length;
+    currentPatternWords = [];
   }
   
-  return { word, isLastInSeries, seriesHasComposition: series.hasComposition, seriesWords };
+  return { word, isLastInSeries, patternWords, currentPattern: pattern };
 }
 
 let wordImages: HTMLCanvasElement[] = [];
@@ -294,11 +292,10 @@ const FADE_OUT = 4000;
 const TOTAL_DURATION = FADE_IN + VIBRATE + HOLD_NO_VIBRATE + FADE_OUT;
 const VIBRATION_INTENSITY = 5;
 
-const COMPOSITION_FADE_IN = 4000;
-const COMPOSITION_VIBRATE = 3000;
+const COMPOSITION_LETTER_REVEAL = 4000;
 const COMPOSITION_HOLD = 3000;
 const COMPOSITION_FADE_OUT = 4000;
-const COMPOSITION_TOTAL = COMPOSITION_FADE_IN + COMPOSITION_VIBRATE + COMPOSITION_HOLD + COMPOSITION_FADE_OUT;
+const COMPOSITION_TOTAL = COMPOSITION_LETTER_REVEAL + COMPOSITION_HOLD + COMPOSITION_FADE_OUT;
 
 const IMAGE_COLORS = ['#FF0000'];
 
@@ -309,7 +306,7 @@ export function startMorph(
   wallStart: { x: number; y: number }, 
   wallEnd: { x: number; y: number }
 ): void {
-  const { word, isLastInSeries, seriesHasComposition, seriesWords } = getNextWordInSeries();
+  const { word, isLastInSeries, patternWords } = getNextWordInSeries();
   const color = IMAGE_COLORS[Math.floor(Math.random() * IMAGE_COLORS.length)];
   
   activeWords.push({
@@ -320,9 +317,9 @@ export function startMorph(
     color,
   });
   
-  if (isLastInSeries && seriesHasComposition) {
+  if (isLastInSeries) {
     pendingComposition = {
-      words: seriesWords,
+      words: patternWords,
       triggerTime: performance.now() + TOTAL_DURATION
     };
   }
@@ -339,7 +336,7 @@ export function startInnerMorph(
   wallStart: { x: number; y: number }, 
   wallEnd: { x: number; y: number }
 ): void {
-  const { word, isLastInSeries, seriesHasComposition, seriesWords } = getNextWordInSeries();
+  const { word, isLastInSeries, patternWords } = getNextWordInSeries();
   const color = IMAGE_COLORS[Math.floor(Math.random() * IMAGE_COLORS.length)];
   
   activeWords.push({
@@ -350,9 +347,9 @@ export function startInnerMorph(
     color,
   });
   
-  if (isLastInSeries && seriesHasComposition) {
+  if (isLastInSeries) {
     pendingComposition = {
-      words: seriesWords,
+      words: patternWords,
       triggerTime: performance.now() + TOTAL_DURATION
     };
   }
@@ -481,25 +478,18 @@ export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: n
     if (anim.isComposition && anim.compositionWords) {
       const composedText = anim.compositionWords.join(' ');
       const totalChars = composedText.length;
-      const charRevealTime = COMPOSITION_FADE_IN / totalChars;
+      const charRevealTime = COMPOSITION_LETTER_REVEAL / totalChars;
       
       let opacity = 1;
-      let vibrationX = 0;
-      let vibrationY = 0;
       let showUnderscore = true;
       let underscoreBlink = true;
       
-      if (elapsed < COMPOSITION_FADE_IN) {
+      if (elapsed < COMPOSITION_LETTER_REVEAL) {
         opacity = Math.min(1, elapsed / 1000);
-        vibrationX = (Math.random() - 0.5) * VIBRATION_INTENSITY * 2;
-        vibrationY = (Math.random() - 0.5) * VIBRATION_INTENSITY * 2;
-      } else if (elapsed < COMPOSITION_FADE_IN + COMPOSITION_VIBRATE) {
-        vibrationX = (Math.random() - 0.5) * VIBRATION_INTENSITY * 2;
-        vibrationY = (Math.random() - 0.5) * VIBRATION_INTENSITY * 2;
-      } else if (elapsed < COMPOSITION_FADE_IN + COMPOSITION_VIBRATE + COMPOSITION_HOLD) {
-        underscoreBlink = Math.floor((elapsed - COMPOSITION_FADE_IN - COMPOSITION_VIBRATE) / 300) % 2 === 0;
+      } else if (elapsed < COMPOSITION_LETTER_REVEAL + COMPOSITION_HOLD) {
+        underscoreBlink = Math.floor((elapsed - COMPOSITION_LETTER_REVEAL) / 300) % 2 === 0;
       } else {
-        const fadeElapsed = elapsed - COMPOSITION_FADE_IN - COMPOSITION_VIBRATE - COMPOSITION_HOLD;
+        const fadeElapsed = elapsed - COMPOSITION_LETTER_REVEAL - COMPOSITION_HOLD;
         opacity = 1 - (fadeElapsed / COMPOSITION_FADE_OUT);
         showUnderscore = false;
       }
@@ -510,7 +500,7 @@ export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: n
         ctx.fillStyle = anim.color;
         
         let displayText = '';
-        if (elapsed < COMPOSITION_FADE_IN) {
+        if (elapsed < COMPOSITION_LETTER_REVEAL) {
           const charsToShow = Math.floor(elapsed / charRevealTime);
           displayText = composedText.substring(0, charsToShow);
         } else {
@@ -521,7 +511,7 @@ export function drawMorphingShapes(ctx: CanvasRenderingContext2D, canvasWidth: n
           displayText += '_';
         }
         
-        ctx.fillText(displayText, leftMargin + vibrationX, yOffset + vibrationY);
+        ctx.fillText(displayText, leftMargin, yOffset);
         ctx.restore();
       }
       
