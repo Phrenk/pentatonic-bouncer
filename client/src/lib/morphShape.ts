@@ -8,7 +8,18 @@ const VERBI = [
   'placare', 'distendere', 'sospendere', 'inseguire', 'sciogliere', 'ricomporre',
   'erodere', 'vibrare', 'desiderare', 'comprendere', 'riconoscere', 'scavare',
   'sprofondare', 'scegliere', 'evadere', 'tendere', 'anelare', 'rivelare',
-  'bruciare', 'tacere', 'allontanare'
+  'bruciare', 'tacere', 'allontanare',
+  'ritrarsi', 'velare', 'nascondere', 'togliere', 'spogliare', 'rarefare',
+  'attenuare', 'quietare', 'oltrepassare', 'varcare', 'aprire', 'chiudere',
+  'incominciare', 'finire', 'sorgere', 'calare', 'apparire', 'scomparire',
+  'abitare', 'orientarsi', 'abbandonarsi', 'abbandonare', 'resistere', 'cedere',
+  'accettare', 'sostenere', 'attrarre', 'mutare', 'divenire', 'trasformarsi',
+  'trasformare', 'evolvere', 'generare', 'nutrire', 'rigenerare', 'consumare',
+  'percepire', 'sentire', 'intuire', 'avvertire', 'sfiorare', 'assaporare',
+  'risentire', 'scrutare', 'accennare', 'muovere', 'andare', 'procedere',
+  'derivare', 'scivolare', 'emergere', 'affondare', 'ritornare', 'attraversare',
+  'essere', 'restare', 'permanere', 'indugiare', 'esistere', 'presenziare',
+  'giacere', 'stare', 'vivere'
 ];
 
 const SOSTANTIVI = [
@@ -28,7 +39,18 @@ const SOSTANTIVI = [
   'slancio', 'ferita', 'eccesso', 'vertigine', 'senso', 'verità', 'segreto',
   'origine', 'strato', 'fondale', 'interiore', 'pausa', 'intervallo', 'apertura',
   'cesura', 'volo', 'possibilità', 'promessa', 'lontananza', 'direzione', 'distacco',
-  'margine', 'altrove', 'nostalgia'
+  'margine', 'altrove', 'nostalgia',
+  'vastità', 'confine', 'liminarità', 'interstizio', 'passaggio', 'distanza',
+  'durata', 'istante', 'ciclo', 'sospensione', 'continuum', 'latenza', 'attimo',
+  'permanenza', 'sottrazione', 'spoliazione', 'penombra', 'tranquillità', 'flusso',
+  'onda', 'oceano', 'nebbia', 'linfa', 'radura', 'nascita', 'fioritura', 'sviluppo',
+  'nutrimento', 'matrice', 'inizio', 'principio', 'semenza', 'impulso', 'tensione',
+  'ardore', 'incandescenza', 'vibrazione', 'scossa', 'urgenza', 'forza', 'pressione',
+  'interiorità', 'intimità', 'sensibilità', 'pulsazione', 'contatto', 'vita',
+  'fragore', 'tremore', 'attenzione', 'intelligenza', 'comprensione', 'frattura',
+  'crollo', 'perdita', 'disorientamento', 'significato', 'arcano', 'ignoto',
+  'segretezza', 'accoglienza', 'custodia', 'vicinanza', 'ospitalità', 'tessitura',
+  'legame', 'potenza', 'avvenire', 'chiamata', 'vocazione'
 ];
 
 const AVVERBI = [
@@ -36,7 +58,11 @@ const AVVERBI = [
   'segretamente', 'naturalmente', 'inavvertitamente', 'dolcemente', 'oscuramente',
   'improvvisamente', 'continuamente', 'interiormente', 'separatamente', 'liberamente',
   'lontano', 'vicino', 'oltre', 'dentro', 'insieme', 'solo', 'altrove', 'dovunque',
-  'ancora', 'sempre', 'mai', 'appena', 'ora', 'domani', 'oggi'
+  'ancora', 'sempre', 'mai', 'appena', 'ora', 'domani', 'oggi',
+  'lievemente', 'pacatamente', 'delicatamente', 'morbidamente', 'tacitamente',
+  'sottilmente', 'velatamente', 'costantemente', 'ciclicamente', 'ritmicamente',
+  'consapevolmente', 'attentamente', 'ovunque', 'là', 'qui', 'attorno', 'verso',
+  'tardi', 'presto', 'talvolta', 'spesso', 'raramente', 'ormai'
 ];
 
 const AGGETTIVI = [
@@ -44,7 +70,13 @@ const AGGETTIVI = [
   'fragile', 'opaco', 'illuminato', 'sospeso', 'nudo', 'invisibile', 'irrisolto',
   'denso', 'mobile', 'instabile', 'primordiale', 'essenziale', 'segreto', 'quieto',
   'ardente', 'inconsapevole', 'incompiuto', 'obliquo', 'intuitivo', 'notturno',
-  'inerme', 'leggero', 'aperto'
+  'inerme', 'leggero', 'aperto',
+  'intimo', 'abissale', 'raccolto', 'sommerso', 'radicato', 'impalpabile', 'velato',
+  'tacito', 'sfumato', 'sotteso', 'mutevole', 'errante', 'scorrevole', 'vibrante',
+  'crepuscolare', 'oscuro', 'ombroso', 'attenuato', 'incandescente', 'teso', 'vivo',
+  'pulsante', 'trattenuto', 'acceso', 'radente', 'originario', 'elementare',
+  'nascente', 'germinale', 'primo', 'iniziale', 'disponibile', 'accogliente',
+  'silenzioso', 'quietante', 'presente', 'liminare', 'transitorio'
 ];
 
 type WordCategory = 'verbo' | 'sostantivo' | 'avverbio' | 'aggettivo';
