@@ -22,25 +22,25 @@ interface PentagonCanvasProps {
   onBounceCountChange: (count: number) => void;
 }
 
-const BALL_BLUE = '#000000';
-const LIGHT_BLUE = '#330000';
+const CANVAS_BG = '#FFFFFF';
+const BALL_COLOR = '#000000';
 
-const LCD_RED = '#FF0000';
+const LINE_COLOR = '#000000';
 
 const WALL_COLORS = [
-  LCD_RED,
-  LCD_RED,
-  LCD_RED,
-  LCD_RED,
-  LCD_RED,
+  LINE_COLOR,
+  LINE_COLOR,
+  LINE_COLOR,
+  LINE_COLOR,
+  LINE_COLOR,
 ];
 
 const INNER_WALL_COLORS = [
-  LCD_RED,
-  LCD_RED,
-  LCD_RED,
-  LCD_RED,
-  LCD_RED,
+  LINE_COLOR,
+  LINE_COLOR,
+  LINE_COLOR,
+  LINE_COLOR,
+  LINE_COLOR,
 ];
 
 const LEFT_PANEL_WIDTH = 220;
@@ -164,7 +164,7 @@ export function PentagonCanvas({
     
     ctx.clearRect(0, 0, width, height);
     
-    ctx.fillStyle = BALL_BLUE;
+    ctx.fillStyle = CANVAS_BG;
     ctx.fillRect(0, 0, width, height);
     
     const pentagonAreaWidth = width - LEFT_PANEL_WIDTH;
@@ -181,7 +181,7 @@ export function PentagonCanvas({
         ctx.lineTo(vertices[i].x, vertices[i].y);
       }
       ctx.closePath();
-      ctx.fillStyle = BALL_BLUE;
+      ctx.fillStyle = CANVAS_BG;
       ctx.fill();
     }
     

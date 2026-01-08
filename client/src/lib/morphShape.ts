@@ -304,7 +304,7 @@ const COMPOSITION_HOLD = 3000;
 const COMPOSITION_FADE_OUT = 4000;
 const COMPOSITION_TOTAL = COMPOSITION_LETTER_REVEAL + COMPOSITION_HOLD + COMPOSITION_FADE_OUT;
 
-const IMAGE_COLORS = ['#FF0000'];
+const IMAGE_COLORS = ['#000000'];
 
 const pendingCompositions: { words: string[]; triggerTime: number }[] = [];
 
@@ -420,7 +420,7 @@ function checkPendingComposition(): void {
       word: composition.words.join(' '),
       startTime: now,
       duration: COMPOSITION_TOTAL,
-      color: '#FF0000',
+      color: '#000000',
       isComposition: true,
       compositionWords: composition.words
     });
