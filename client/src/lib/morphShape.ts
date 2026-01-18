@@ -333,8 +333,10 @@ function getNextWordInSeries(): { word: string; isLastInSeries: boolean; pattern
       if (currentStepIndex === 0) {
         currentPatternNoun = getNextNoun();
         const adj = getNextAdjective(currentPatternNoun.gender);
-        const article = getArticle(currentPatternNoun);
-        word = article.endsWith("'") ? article + adj : article + ' ' + adj;
+        const articleBase = currentPatternNoun.gender === 'm' ? 
+          (startsWithSpecialConsonant(adj) ? 'lo' : (startsWithVowel(adj) ? "l'" : 'il')) :
+          (startsWithVowel(adj) ? "l'" : 'la');
+        word = articleBase.endsWith("'") ? articleBase + adj : articleBase + ' ' + adj;
       } else {
         word = currentPatternNoun!.word;
       }
