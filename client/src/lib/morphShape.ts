@@ -1,3 +1,10 @@
+type Gender = 'm' | 'f';
+
+interface Noun {
+  word: string;
+  gender: Gender;
+}
+
 const VERBI = [
   'respirare', 'contemplare', 'ascoltare', 'fluire', 'sostare', 'attendere',
   'accogliere', 'osservare', 'ricordare', 'dimenticare', 'vagare', 'germogliare',
@@ -22,35 +29,101 @@ const VERBI = [
   'giacere', 'stare', 'vivere'
 ];
 
-const SOSTANTIVI = [
-  'orizzonte', 'silenzio', 'luce', 'ombra', 'respiro', 'tempo', 'spazio', 'quiete',
-  'attesa', 'memoria', 'oblio', 'eco', 'soglia', 'sentiero', 'radice', 'seme',
-  'fiore', 'vento', 'acqua', 'fiume', 'mare', 'riva', 'cielo', 'stella', 'notte',
-  'alba', 'crepuscolo', 'equilibrio', 'armonia', 'pace', 'lentezza', 'profondità',
-  'vuoto', 'presenza', 'assenza', 'cura', 'dimora', 'casa', 'pietra', 'sabbia',
-  'isola', 'viaggio', 'ritorno', 'sguardo', 'ascolto', 'parola', 'voce', 'pelle',
-  'battito', 'cuore', 'anima', 'spirito', 'coscienza', 'consapevolezza', 'mistero',
-  'infinito', 'limite', 'unità', 'cammino', 'ritmo', 'sorgente', 'riflesso',
-  'carezza', 'abbraccio', 'quietudine', 'veglia', 'inabissarsi', 'miraggio',
-  'deragliare', 'fenditura', 'visione', 'smarrimento', 'abisso', 'crepa', 'cenere',
-  'deriva', 'rovina', 'essenza', 'assoluto', 'enigma', 'rivelazione', 'mancanza',
-  'spinta', 'richiamo', 'varco', 'esito', 'approdo', 'risposta', 'marea', 'bosco',
-  'corrente', 'chiarezza', 'risonanza', 'fragilità', 'intuizione', 'fiamma', 'fuoco',
-  'slancio', 'ferita', 'eccesso', 'vertigine', 'senso', 'verità', 'segreto',
-  'origine', 'strato', 'fondale', 'interiore', 'pausa', 'intervallo', 'apertura',
-  'cesura', 'volo', 'possibilità', 'promessa', 'lontananza', 'direzione', 'distacco',
-  'margine', 'altrove', 'nostalgia',
-  'vastità', 'confine', 'liminarità', 'interstizio', 'passaggio', 'distanza',
-  'durata', 'istante', 'ciclo', 'sospensione', 'continuum', 'latenza', 'attimo',
-  'permanenza', 'sottrazione', 'spoliazione', 'penombra', 'tranquillità', 'flusso',
-  'onda', 'oceano', 'nebbia', 'linfa', 'radura', 'nascita', 'fioritura', 'sviluppo',
-  'nutrimento', 'matrice', 'inizio', 'principio', 'semenza', 'impulso', 'tensione',
-  'ardore', 'incandescenza', 'vibrazione', 'scossa', 'urgenza', 'forza', 'pressione',
-  'interiorità', 'intimità', 'sensibilità', 'pulsazione', 'contatto', 'vita',
-  'fragore', 'tremore', 'attenzione', 'intelligenza', 'comprensione', 'frattura',
-  'crollo', 'perdita', 'disorientamento', 'significato', 'arcano', 'ignoto',
-  'segretezza', 'accoglienza', 'custodia', 'vicinanza', 'ospitalità', 'tessitura',
-  'legame', 'potenza', 'avvenire', 'chiamata', 'vocazione'
+const SOSTANTIVI: Noun[] = [
+  { word: 'orizzonte', gender: 'm' }, { word: 'silenzio', gender: 'm' },
+  { word: 'luce', gender: 'f' }, { word: 'ombra', gender: 'f' },
+  { word: 'respiro', gender: 'm' }, { word: 'tempo', gender: 'm' },
+  { word: 'spazio', gender: 'm' }, { word: 'quiete', gender: 'f' },
+  { word: 'attesa', gender: 'f' }, { word: 'memoria', gender: 'f' },
+  { word: 'oblio', gender: 'm' }, { word: 'eco', gender: 'f' },
+  { word: 'soglia', gender: 'f' }, { word: 'sentiero', gender: 'm' },
+  { word: 'radice', gender: 'f' }, { word: 'seme', gender: 'm' },
+  { word: 'fiore', gender: 'm' }, { word: 'vento', gender: 'm' },
+  { word: 'acqua', gender: 'f' }, { word: 'fiume', gender: 'm' },
+  { word: 'mare', gender: 'm' }, { word: 'riva', gender: 'f' },
+  { word: 'cielo', gender: 'm' }, { word: 'stella', gender: 'f' },
+  { word: 'notte', gender: 'f' }, { word: 'alba', gender: 'f' },
+  { word: 'crepuscolo', gender: 'm' }, { word: 'equilibrio', gender: 'm' },
+  { word: 'armonia', gender: 'f' }, { word: 'pace', gender: 'f' },
+  { word: 'lentezza', gender: 'f' }, { word: 'profondità', gender: 'f' },
+  { word: 'vuoto', gender: 'm' }, { word: 'presenza', gender: 'f' },
+  { word: 'assenza', gender: 'f' }, { word: 'cura', gender: 'f' },
+  { word: 'dimora', gender: 'f' }, { word: 'casa', gender: 'f' },
+  { word: 'pietra', gender: 'f' }, { word: 'sabbia', gender: 'f' },
+  { word: 'isola', gender: 'f' }, { word: 'viaggio', gender: 'm' },
+  { word: 'ritorno', gender: 'm' }, { word: 'sguardo', gender: 'm' },
+  { word: 'ascolto', gender: 'm' }, { word: 'parola', gender: 'f' },
+  { word: 'voce', gender: 'f' }, { word: 'pelle', gender: 'f' },
+  { word: 'battito', gender: 'm' }, { word: 'cuore', gender: 'm' },
+  { word: 'anima', gender: 'f' }, { word: 'spirito', gender: 'm' },
+  { word: 'coscienza', gender: 'f' }, { word: 'consapevolezza', gender: 'f' },
+  { word: 'mistero', gender: 'm' }, { word: 'infinito', gender: 'm' },
+  { word: 'limite', gender: 'm' }, { word: 'unità', gender: 'f' },
+  { word: 'cammino', gender: 'm' }, { word: 'ritmo', gender: 'm' },
+  { word: 'sorgente', gender: 'f' }, { word: 'riflesso', gender: 'm' },
+  { word: 'carezza', gender: 'f' }, { word: 'abbraccio', gender: 'm' },
+  { word: 'quietudine', gender: 'f' }, { word: 'veglia', gender: 'f' },
+  { word: 'miraggio', gender: 'm' }, { word: 'fenditura', gender: 'f' },
+  { word: 'visione', gender: 'f' }, { word: 'smarrimento', gender: 'm' },
+  { word: 'abisso', gender: 'm' }, { word: 'crepa', gender: 'f' },
+  { word: 'cenere', gender: 'f' }, { word: 'deriva', gender: 'f' },
+  { word: 'rovina', gender: 'f' }, { word: 'essenza', gender: 'f' },
+  { word: 'assoluto', gender: 'm' }, { word: 'enigma', gender: 'm' },
+  { word: 'rivelazione', gender: 'f' }, { word: 'mancanza', gender: 'f' },
+  { word: 'spinta', gender: 'f' }, { word: 'richiamo', gender: 'm' },
+  { word: 'varco', gender: 'm' }, { word: 'esito', gender: 'm' },
+  { word: 'approdo', gender: 'm' }, { word: 'risposta', gender: 'f' },
+  { word: 'marea', gender: 'f' }, { word: 'bosco', gender: 'm' },
+  { word: 'corrente', gender: 'f' }, { word: 'chiarezza', gender: 'f' },
+  { word: 'risonanza', gender: 'f' }, { word: 'fragilità', gender: 'f' },
+  { word: 'intuizione', gender: 'f' }, { word: 'fiamma', gender: 'f' },
+  { word: 'fuoco', gender: 'm' }, { word: 'slancio', gender: 'm' },
+  { word: 'ferita', gender: 'f' }, { word: 'eccesso', gender: 'm' },
+  { word: 'vertigine', gender: 'f' }, { word: 'senso', gender: 'm' },
+  { word: 'verità', gender: 'f' }, { word: 'segreto', gender: 'm' },
+  { word: 'origine', gender: 'f' }, { word: 'strato', gender: 'm' },
+  { word: 'fondale', gender: 'm' }, { word: 'pausa', gender: 'f' },
+  { word: 'intervallo', gender: 'm' }, { word: 'apertura', gender: 'f' },
+  { word: 'cesura', gender: 'f' }, { word: 'volo', gender: 'm' },
+  { word: 'possibilità', gender: 'f' }, { word: 'promessa', gender: 'f' },
+  { word: 'lontananza', gender: 'f' }, { word: 'direzione', gender: 'f' },
+  { word: 'distacco', gender: 'm' }, { word: 'margine', gender: 'm' },
+  { word: 'nostalgia', gender: 'f' }, { word: 'vastità', gender: 'f' },
+  { word: 'confine', gender: 'm' }, { word: 'liminarità', gender: 'f' },
+  { word: 'interstizio', gender: 'm' }, { word: 'passaggio', gender: 'm' },
+  { word: 'distanza', gender: 'f' }, { word: 'durata', gender: 'f' },
+  { word: 'istante', gender: 'm' }, { word: 'ciclo', gender: 'm' },
+  { word: 'sospensione', gender: 'f' }, { word: 'continuum', gender: 'm' },
+  { word: 'latenza', gender: 'f' }, { word: 'attimo', gender: 'm' },
+  { word: 'permanenza', gender: 'f' }, { word: 'sottrazione', gender: 'f' },
+  { word: 'spoliazione', gender: 'f' }, { word: 'penombra', gender: 'f' },
+  { word: 'tranquillità', gender: 'f' }, { word: 'flusso', gender: 'm' },
+  { word: 'onda', gender: 'f' }, { word: 'oceano', gender: 'm' },
+  { word: 'nebbia', gender: 'f' }, { word: 'linfa', gender: 'f' },
+  { word: 'radura', gender: 'f' }, { word: 'nascita', gender: 'f' },
+  { word: 'fioritura', gender: 'f' }, { word: 'sviluppo', gender: 'm' },
+  { word: 'nutrimento', gender: 'm' }, { word: 'matrice', gender: 'f' },
+  { word: 'inizio', gender: 'm' }, { word: 'principio', gender: 'm' },
+  { word: 'semenza', gender: 'f' }, { word: 'impulso', gender: 'm' },
+  { word: 'tensione', gender: 'f' }, { word: 'ardore', gender: 'm' },
+  { word: 'incandescenza', gender: 'f' }, { word: 'vibrazione', gender: 'f' },
+  { word: 'scossa', gender: 'f' }, { word: 'urgenza', gender: 'f' },
+  { word: 'forza', gender: 'f' }, { word: 'pressione', gender: 'f' },
+  { word: 'interiorità', gender: 'f' }, { word: 'intimità', gender: 'f' },
+  { word: 'sensibilità', gender: 'f' }, { word: 'pulsazione', gender: 'f' },
+  { word: 'contatto', gender: 'm' }, { word: 'vita', gender: 'f' },
+  { word: 'fragore', gender: 'm' }, { word: 'tremore', gender: 'm' },
+  { word: 'attenzione', gender: 'f' }, { word: 'intelligenza', gender: 'f' },
+  { word: 'comprensione', gender: 'f' }, { word: 'frattura', gender: 'f' },
+  { word: 'crollo', gender: 'm' }, { word: 'perdita', gender: 'f' },
+  { word: 'disorientamento', gender: 'm' }, { word: 'significato', gender: 'm' },
+  { word: 'arcano', gender: 'm' }, { word: 'ignoto', gender: 'm' },
+  { word: 'segretezza', gender: 'f' }, { word: 'accoglienza', gender: 'f' },
+  { word: 'custodia', gender: 'f' }, { word: 'vicinanza', gender: 'f' },
+  { word: 'ospitalità', gender: 'f' }, { word: 'tessitura', gender: 'f' },
+  { word: 'legame', gender: 'm' }, { word: 'potenza', gender: 'f' },
+  { word: 'avvenire', gender: 'm' }, { word: 'chiamata', gender: 'f' },
+  { word: 'vocazione', gender: 'f' }
 ];
 
 const AVVERBI = [
@@ -79,7 +152,63 @@ const AGGETTIVI = [
   'silenzioso', 'quietante', 'presente', 'liminare', 'transitorio'
 ];
 
-type WordCategory = 'verbo' | 'sostantivo' | 'avverbio' | 'aggettivo';
+function inflectAdjective(adj: string, gender: Gender): string {
+  if (adj.endsWith('o')) {
+    return gender === 'f' ? adj.slice(0, -1) + 'a' : adj;
+  }
+  return adj;
+}
+
+function startsWithVowel(word: string): boolean {
+  return /^[aeiouàèéìòù]/i.test(word);
+}
+
+function startsWithSpecialConsonant(word: string): boolean {
+  const lower = word.toLowerCase();
+  return lower.startsWith('z') || 
+         lower.startsWith('gn') || 
+         lower.startsWith('ps') || 
+         lower.startsWith('pn') ||
+         lower.startsWith('x') ||
+         (lower.startsWith('s') && /^s[bcdfghlmnpqrstvwz]/i.test(lower));
+}
+
+function getArticle(noun: Noun, type: 'definite' | 'indefinite' = 'definite'): string {
+  const { word, gender } = noun;
+  const vowel = startsWithVowel(word);
+  const special = startsWithSpecialConsonant(word);
+  
+  if (type === 'definite') {
+    if (gender === 'm') {
+      if (vowel) return "l'";
+      if (special) return 'lo';
+      return 'il';
+    } else {
+      if (vowel) return "l'";
+      return 'la';
+    }
+  } else {
+    if (gender === 'm') {
+      if (special) return 'uno';
+      return 'un';
+    } else {
+      if (vowel) return "un'";
+      return 'una';
+    }
+  }
+}
+
+function getPrepositionArticle(noun: Noun, prep: string): string {
+  const article = getArticle(noun, 'definite');
+  
+  if (prep === 'di') {
+    if (article === 'il') return 'del';
+    if (article === 'lo') return 'dello';
+    if (article === 'la') return 'della';
+    if (article === "l'") return "dell'";
+  }
+  return prep + ' ' + article;
+}
 
 type SyntacticPattern = 'S+A' | 'V+S' | 'A+S' | 'S+S' | 'V+R' | 'A+A' | 'V+V';
 
@@ -90,81 +219,165 @@ const SYNTACTIC_PATTERNS: SyntacticPattern[] = [
 let currentPatternIndex = 0;
 let currentStepIndex = 0;
 let currentPatternWords: string[] = [];
+let currentPatternNoun: Noun | null = null;
 
-const categoryHistory: Map<WordCategory, number[]> = new Map();
+const verbHistory: number[] = [];
+const nounHistory: number[] = [];
+const adverbHistory: number[] = [];
+const adjectiveHistory: number[] = [];
 const HISTORY_SIZE = 10;
 
-function getCategoryWords(category: WordCategory): string[] {
-  switch (category) {
-    case 'verbo': return VERBI;
-    case 'sostantivo': return SOSTANTIVI;
-    case 'avverbio': return AVVERBI;
-    case 'aggettivo': return AGGETTIVI;
+function getNextVerb(): string {
+  const available: number[] = [];
+  for (let i = 0; i < VERBI.length; i++) {
+    if (!verbHistory.includes(i)) available.push(i);
   }
+  if (available.length === 0) {
+    verbHistory.length = 0;
+    for (let i = 0; i < VERBI.length; i++) available.push(i);
+  }
+  const selected = available[Math.floor(Math.random() * available.length)];
+  verbHistory.push(selected);
+  if (verbHistory.length > HISTORY_SIZE) verbHistory.shift();
+  return VERBI[selected];
 }
 
-function getNextWordFromCategory(category: WordCategory): string {
-  const words = getCategoryWords(category);
-  const history = categoryHistory.get(category) || [];
-  
+function getNextNoun(): Noun {
   const available: number[] = [];
-  for (let i = 0; i < words.length; i++) {
-    if (!history.includes(i)) {
-      available.push(i);
-    }
+  for (let i = 0; i < SOSTANTIVI.length; i++) {
+    if (!nounHistory.includes(i)) available.push(i);
   }
-  
   if (available.length === 0) {
-    for (let i = 0; i < words.length; i++) {
-      available.push(i);
-    }
-    categoryHistory.set(category, []);
+    nounHistory.length = 0;
+    for (let i = 0; i < SOSTANTIVI.length; i++) available.push(i);
   }
-  
   const selected = available[Math.floor(Math.random() * available.length)];
-  
-  const newHistory = [...history, selected];
-  if (newHistory.length > HISTORY_SIZE) {
-    newHistory.shift();
+  nounHistory.push(selected);
+  if (nounHistory.length > HISTORY_SIZE) nounHistory.shift();
+  return SOSTANTIVI[selected];
+}
+
+function getNextAdverb(): string {
+  const available: number[] = [];
+  for (let i = 0; i < AVVERBI.length; i++) {
+    if (!adverbHistory.includes(i)) available.push(i);
   }
-  categoryHistory.set(category, newHistory);
-  
-  return words[selected];
+  if (available.length === 0) {
+    adverbHistory.length = 0;
+    for (let i = 0; i < AVVERBI.length; i++) available.push(i);
+  }
+  const selected = available[Math.floor(Math.random() * available.length)];
+  adverbHistory.push(selected);
+  if (adverbHistory.length > HISTORY_SIZE) adverbHistory.shift();
+  return AVVERBI[selected];
+}
+
+function getNextAdjective(gender: Gender): string {
+  const available: number[] = [];
+  for (let i = 0; i < AGGETTIVI.length; i++) {
+    if (!adjectiveHistory.includes(i)) available.push(i);
+  }
+  if (available.length === 0) {
+    adjectiveHistory.length = 0;
+    for (let i = 0; i < AGGETTIVI.length; i++) available.push(i);
+  }
+  const selected = available[Math.floor(Math.random() * available.length)];
+  adjectiveHistory.push(selected);
+  if (adjectiveHistory.length > HISTORY_SIZE) adjectiveHistory.shift();
+  return inflectAdjective(AGGETTIVI[selected], gender);
 }
 
 function convertToGerund(verb: string): string {
-  if (verb.endsWith('are')) {
+  if (verb.endsWith('arsi')) {
+    return verb.slice(0, -4) + 'andosi';
+  } else if (verb.endsWith('ersi')) {
+    return verb.slice(0, -4) + 'endosi';
+  } else if (verb.endsWith('irsi')) {
+    return verb.slice(0, -4) + 'endosi';
+  } else if (verb.endsWith('are')) {
     return verb.slice(0, -3) + 'ando';
   } else if (verb.endsWith('ere')) {
     return verb.slice(0, -3) + 'endo';
   } else if (verb.endsWith('ire')) {
     return verb.slice(0, -3) + 'endo';
-  } else if (verb.endsWith('rsi')) {
-    return verb.slice(0, -3) + 'ndosi';
   }
   return verb + 'ndo';
 }
 
-function getPatternCategories(pattern: SyntacticPattern): [WordCategory, WordCategory] {
-  switch (pattern) {
-    case 'S+A': return ['sostantivo', 'aggettivo'];
-    case 'V+S': return ['verbo', 'sostantivo'];
-    case 'A+S': return ['aggettivo', 'sostantivo'];
-    case 'S+S': return ['sostantivo', 'sostantivo'];
-    case 'V+R': return ['verbo', 'avverbio'];
-    case 'A+A': return ['aggettivo', 'aggettivo'];
-    case 'V+V': return ['verbo', 'verbo'];
-  }
-}
-
 function getNextWordInSeries(): { word: string; isLastInSeries: boolean; patternWords: string[]; currentPattern: SyntacticPattern } {
   const pattern = SYNTACTIC_PATTERNS[currentPatternIndex];
-  const categories = getPatternCategories(pattern);
+  let word = '';
   
-  let word = getNextWordFromCategory(categories[currentStepIndex]);
-  
-  if (pattern === 'V+V' && currentStepIndex === 1) {
-    word = convertToGerund(word);
+  switch (pattern) {
+    case 'S+A': {
+      if (currentStepIndex === 0) {
+        currentPatternNoun = getNextNoun();
+        const article = getArticle(currentPatternNoun);
+        word = article.endsWith("'") ? article + currentPatternNoun.word : article + ' ' + currentPatternNoun.word;
+      } else {
+        word = getNextAdjective(currentPatternNoun!.gender);
+      }
+      break;
+    }
+    case 'V+S': {
+      if (currentStepIndex === 0) {
+        word = getNextVerb();
+      } else {
+        const noun = getNextNoun();
+        const article = getArticle(noun);
+        word = article.endsWith("'") ? article + noun.word : article + ' ' + noun.word;
+      }
+      break;
+    }
+    case 'A+S': {
+      if (currentStepIndex === 0) {
+        currentPatternNoun = getNextNoun();
+        const adj = getNextAdjective(currentPatternNoun.gender);
+        const article = getArticle(currentPatternNoun);
+        word = article.endsWith("'") ? article + adj : article + ' ' + adj;
+      } else {
+        word = currentPatternNoun!.word;
+      }
+      break;
+    }
+    case 'S+S': {
+      if (currentStepIndex === 0) {
+        const noun = getNextNoun();
+        const article = getArticle(noun);
+        word = article.endsWith("'") ? article + noun.word : article + ' ' + noun.word;
+      } else {
+        const noun2 = getNextNoun();
+        const prep = getPrepositionArticle(noun2, 'di');
+        word = prep.endsWith("'") ? prep + noun2.word : prep + ' ' + noun2.word;
+      }
+      break;
+    }
+    case 'V+R': {
+      if (currentStepIndex === 0) {
+        word = getNextVerb();
+      } else {
+        word = getNextAdverb();
+      }
+      break;
+    }
+    case 'A+A': {
+      const gender: Gender = Math.random() < 0.5 ? 'm' : 'f';
+      if (currentStepIndex === 0) {
+        currentPatternNoun = { word: '', gender };
+        word = getNextAdjective(gender);
+      } else {
+        word = getNextAdjective(currentPatternNoun!.gender);
+      }
+      break;
+    }
+    case 'V+V': {
+      if (currentStepIndex === 0) {
+        word = getNextVerb();
+      } else {
+        word = convertToGerund(getNextVerb());
+      }
+      break;
+    }
   }
   
   currentPatternWords.push(word);
@@ -178,6 +391,7 @@ function getNextWordInSeries(): { word: string; isLastInSeries: boolean; pattern
     currentStepIndex = 0;
     currentPatternIndex = (currentPatternIndex + 1) % SYNTACTIC_PATTERNS.length;
     currentPatternWords = [];
+    currentPatternNoun = null;
   }
   
   return { word, isLastInSeries, patternWords, currentPattern: pattern };
