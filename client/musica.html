@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Pentatonic Bouncer - Funzionante</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #0f172a; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
+        canvas { background: #1e293b; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        #info { position: absolute; top: 20px; color: white; text-align: center; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <div id="info">Clicca ovunque per far partire la musica e la pallina!</div>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, centerX, centerY;
+        let started = false;
+
+        // Configurazione Pentagono e Audio
+        const sides = 5;
+        const radius = 200;
+        const notes = [261.63, 293.66, 329.63, 392.00, 440.00]; // Scala Pentatonica (C4, D4, E4, G4, A4)
+        let audioCtx;
+
+        // Stato Pallina
+        const ball = { x: 0, y: 0, vx: 5, vy: 3, radius: 10 };
+
+        function init() {
+            width = canvas.width = window.innerWidth * 0.8;
+            height = canvas.height = window.innerHeight * 0.8;
+            centerX = width / 2;
+            centerY = height / 2;
+            ball.x = centerX;
+            ball.y = centerY;
+        }
+
+        function getPentagonVertices() {
+            const vertices = [];
+            for (let i = 0; i < sides; i++) {
+                const angle = (i * 2 * Math.PI) / sides - Math.PI / 2;
+                vertices.push({
+                    x: centerX + radius * Math.cos(angle),
+                    y: centerY + radius * Math.sin(angle)
+                });
+            }
+            return vertices;
+        }
+
+        function playNote(index) {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.frequency.value = notes[index % notes.length];
+            osc.type = 'sine';
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.5);
+        }
+
+        function update() {
+            if (!started) return;
+
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+
+            const vertices = getPentagonVertices();
+            for (let i = 0; i < sides; i++) {
+                const p1 = vertices[i];
+                const p2 = vertices[(i + 1) % sides];
+
+                // Semplice rilevamento collisione con i lati del pentagono
+                // (Nota: per un rimbalzo perfetto servirebbe calcolare il vettore normale)
+                const dist = Math.abs((p2.y - p1.y) * ball.x - (p2.x - p1.x) * ball.y + p2.x * p1.y - p2.y * p1.x) / 
+                             Math.sqrt(Math.pow(p2.y - p1.y, 2) + Math.pow(p2.x - p1.x, 2));
+
+                if (dist < ball.radius) {
+                    ball.vx *= -1.05; // Rimbalza e accelera leggermente
+                    ball.vy *= -1.05;
+                    playNote(i);
+                    break;
+                }
+            }
+
+            // Reset se esce troppo
+            if (Math.hypot(ball.x - centerX, ball.y - centerY) > radius + 50) {
+                ball.x = centerX; ball.y = centerY;
+                ball.vx = 5; ball.vy = 3;
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+            const vertices = getPentagonVertices();
+
+            // Disegna Pentagono
+            ctx.beginPath();
+            ctx.moveTo(vertices[0].x, vertices[0].y);
+            for (let i = 1; i < sides; i++) ctx.lineTo(vertices[i].x, vertices[i].y);
+            ctx.closePath();
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 5;
+            ctx.stroke();
+
+            // Disegna Pallina
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#38bdf8';
+            ctx.fill();
+
+            update();
+            requestAnimationFrame(draw);
+        }
+
+        window.addEventListener('click', () => { 
+            started = true; 
+            document.getElementById('info').style.display = 'none';
+        });
+        window.addEventListener('resize', init);
+        init();
+        draw();
+    </script>
+</body>
+</html>
