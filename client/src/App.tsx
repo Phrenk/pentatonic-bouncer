@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, Router as WouterRouter } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -7,12 +7,18 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import { useEffect } from "react";
 
+// Definiamo il base path per GitHub Pages
+const base = "/pentatonic-bouncer";
+
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route component={NotFound} />
-    </Switch>
+    /* Usiamo WouterRouter per definire la base di tutti gli URL */
+    <WouterRouter base={base}>
+      <Switch>
+        <Route path="/" component={Home} />
+        <Route component={NotFound} />
+      </Switch>
+    </WouterRouter>
   );
 }
 
