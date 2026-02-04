@@ -1,36 +1,38 @@
 let audioContext: AudioContext | null = null;
 const audioBuffers: Map<string, AudioBuffer> = new Map();
 
+const BASE_URL = "/pentatonic-bouncer";
+
 const OUTER_SOUND_SET_A = [
-  { note: 'DO', file: '/sounds/DO__1766249463731.wav' },
-  { note: 'RE', file: '/sounds/RE_1766249463731.wav' },
-  { note: 'MI', file: '/sounds/MI_1766249463731.wav' },
-  { note: 'SOL', file: '/sounds/SOL__1766249463730.wav' },
-  { note: 'LA', file: '/sounds/LA__1766249463729.wav' },
+  { note: 'DO', file: '${BASE_URL}/sounds/DO__1766249463731.wav' },
+  { note: 'RE', file: '${BASE_URL}/sounds/RE_1766249463731.wav' },
+  { note: 'MI', file: '${BASE_URL}/sounds/MI_1766249463731.wav' },
+  { note: 'SOL', file: '${BASE_URL}/sounds/SOL__1766249463730.wav' },
+  { note: 'LA', file: '${BASE_URL}/sounds/LA__1766249463729.wav' },
 ];
 
 const OUTER_SOUND_SET_B = [
-  { note: 'DO', file: '/sounds/C_1_cloudpad_1766333016766.wav' },
-  { note: 'RE', file: '/sounds/D_1_cloudpad_1766333016765.wav' },
-  { note: 'MI', file: '/sounds/E_1_cloudpad_1766333016765.wav' },
-  { note: 'SOL', file: '/sounds/G_1_cloudpad_1766333016765.wav' },
-  { note: 'LA', file: '/sounds/A_1_cloudpad_1766333016764.wav' },
+  { note: 'DO', file: '${BASE_URL}/sounds/C_1_cloudpad_1766333016766.wav' },
+  { note: 'RE', file: '${BASE_URL}/sounds/D_1_cloudpad_1766333016765.wav' },
+  { note: 'MI', file: '${BASE_URL}/sounds/E_1_cloudpad_1766333016765.wav' },
+  { note: 'SOL', file: '${BASE_URL}/sounds/G_1_cloudpad_1766333016765.wav' },
+  { note: 'LA', file: '${BASE_URL}/sounds/A_1_cloudpad_1766333016764.wav' },
 ];
 
 const INNER_SOUND_SET_A = [
-  { note: 'C', file: '/sounds/inner/C_4_tub_bell_riv_1766340955097.wav' },
-  { note: 'D', file: '/sounds/inner/D_4_4_tub_bell_riv_1766340955098.wav' },
-  { note: 'E', file: '/sounds/inner/E_4_tub_bell_riv_1766340955098.wav' },
-  { note: 'G', file: '/sounds/inner/G_4_tub_bell_riv_1766340955098.wav' },
-  { note: 'C5', file: '/sounds/inner/C_5_tub_bell_riv_1766340955098.wav' },
+  { note: 'C', file: '${BASE_URL}/sounds/inner/C_4_tub_bell_riv_1766340955097.wav' },
+  { note: 'D', file: '${BASE_URL}/sounds/inner/D_4_4_tub_bell_riv_1766340955098.wav' },
+  { note: 'E', file: '${BASE_URL}/sounds/inner/E_4_tub_bell_riv_1766340955098.wav' },
+  { note: 'G', file: '${BASE_URL}/sounds/inner/G_4_tub_bell_riv_1766340955098.wav' },
+  { note: 'C5', file: '${BASE_URL}/sounds/inner/C_5_tub_bell_riv_1766340955098.wav' },
 ];
 
 const INNER_SOUND_SET_B = [
-  { note: 'C', file: '/sounds/inner/C_2_tub_bell_riv_1766340998845.wav' },
-  { note: 'D', file: '/sounds/inner/D_2_tub_bell_riv_1766340998846.wav' },
-  { note: 'E', file: '/sounds/inner/E_2_tub_bell_riv_1766340998846.wav' },
-  { note: 'G', file: '/sounds/inner/G_2_tub_bell_riv_1766340998846.wav' },
-  { note: 'C3', file: '/sounds/inner/C_3_tub_bell_riv_1766340998846.wav' },
+  { note: 'C', file: '${BASE_URL}/sounds/inner/C_2_tub_bell_riv_1766340998845.wav' },
+  { note: 'D', file: '${BASE_URL}/sounds/inner/D_2_tub_bell_riv_1766340998846.wav' },
+  { note: 'E', file: '${BASE_URL}/sounds/inner/E_2_tub_bell_riv_1766340998846.wav' },
+  { note: 'G', file: '${BASE_URL}/sounds/inner/G_2_tub_bell_riv_1766340998846.wav' },
+  { note: 'C3', file: '${BASE_URL}/sounds/inner/C_3_tub_bell_riv_1766340998846.wav' },
 ];
 
 let cycleStartTime: number = Date.now();
